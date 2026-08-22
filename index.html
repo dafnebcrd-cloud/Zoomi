@@ -1,808 +1,307 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoomi</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zoomi</title>
+  <style>
+    /* Estilos básicos para el Modal y las Alertas */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* FONDO GENERAL POR DEFECTO */
-        body {
-            background-color: #f5f5dc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            transition: background 0.3s ease;
-        }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
 
-        /* FONDO SOLO PARA LA PANTALLA DE LOGIN */
-        body.login-bg {
-            background-image: url('fondo.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
 
-        /* VISTA 1: PORTADA DE LOGIN */
-        #login-screen {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 95%;
-            max-width: 1300px;
-            height: 85vh;
-            background-color: rgba(251, 245, 232, 0.92);
-            border: 3px solid #b71c1c;
-            border-radius: 25px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            gap: 35px;
-        }
+    .input-group {
+      margin-bottom: 15px;
+    }
 
-        .logo-img-main {
-            width: 450px;
-            max-width: 85%;
-            height: auto;
-            object-fit: contain;
-        }
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
 
-        .btn-login {
-            background-color: #fffdfa;
-            color: #8b0000;
-            border: 3px solid #8b0000;
-            padding: 14px 50px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.15);
-        }
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
 
-        .btn-login:hover {
-            background-color: #8b0000;
-            color: #ffffff;
-            transform: scale(1.03);
-        }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 15px;
+    }
 
-        /* MODAL FLOTANTE DE AUTENTICACIÓN */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 50%;
+    }
 
-        .modal.active {
-            display: flex;
-        }
+    .btn-primary {
+      background-color: #800000;
+      color: white;
+    }
 
-        .modal-content {
-            background-color: #fffdfa;
-            border: 3px solid #8b0000;
-            border-radius: 20px;
-            padding: 40px;
-            width: 500px;
-            max-width: 90%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
+    .btn-secondary {
+      background-color: #ccc;
+      color: #333;
+    }
 
-        .modal-content h2 {
-            color: #8b0000;
-            text-align: center;
-            font-size: 1.8rem;
-        }
+    .alert-message {
+      display: none;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      text-align: center;
+    }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+    .toggle-mode-container {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
 
-        .input-group label {
-            font-size: 1rem;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .input-group input:focus {
-            border-color: #8b0000;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            cursor: pointer;
-            user-select: none;
-            font-size: 1.2rem;
-        }
-
-        .message {
-            font-size: 0.95rem;
-            display: none;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .error-message { color: #d32f2f; }
-        .success-message { color: #2e7d32; }
-
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            gap: 15px;
-        }
-
-        .btn-submit {
-            background-color: #8b0000;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-            flex: 1;
-        }
-
-        .btn-submit:disabled {
-            background-color: #a55151;
-            cursor: not-allowed;
-        }
-
-        .btn-cancel {
-            background-color: #e0e0e0;
-            color: #333;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            flex: 1;
-        }
-
-        .switch-mode {
-            font-size: 0.95rem;
-            text-align: center;
-            color: #8b0000;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        /* VISTA 2: PANEL PRINCIPAL */
-        #main-app {
-            display: none;
-            width: 100%;
-            max-width: 1300px;
-            height: 90vh;
-            background-color: #fbf5e8;
-            border: 3px solid #8b0000;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-        }
-
-        .dashboard-layout {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* MENÚ LATERAL */
-        .sidebar {
-            width: 260px;
-            background-color: #ffffff;
-            border-right: 2px solid #e0e0e0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 25px 0;
-            flex-shrink: 0;
-        }
-
-        .sidebar-top {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .sidebar-logo {
-            text-align: center;
-            padding: 0 20px;
-        }
-
-        .sidebar-logo img {
-            max-width: 180px;
-            height: auto;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-right: 15px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #9e9e9e;
-            cursor: pointer;
-            border-top-right-radius: 25px;
-            border-bottom-right-radius: 25px;
-            transition: all 0.2s ease-in-out;
-            user-select: none;
-        }
-
-        .nav-item:hover {
-            color: #f26b52;
-            background-color: #fff3f0;
-        }
-
-        .nav-item.active {
-            background-color: #f26b52;
-            color: #ffffff;
-            box-shadow: 2px 4px 10px rgba(242, 107, 82, 0.3);
-        }
-
-        .nav-icon-img {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sidebar-bottom {
-            padding-right: 15px;
-        }
-
-        /* ÁREA DE CONTENIDO */
-        .content-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px 50px;
-            position: relative;
-        }
-
-        .welcome-banner {
-            display: inline-block;
-            background: linear-gradient(180deg, #b71c1c 0%, #8b0000 100%);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 15px;
-            font-size: 1.8rem;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            margin-bottom: 30px;
-        }
-
-        .path-container {
-            position: relative;
-            max-width: 850px;
-            margin: 0 auto;
-            padding-bottom: 80px;
-        }
-
-        .path-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .path-node {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            margin-bottom: 90px;
-        }
-
-        .node-left { justify-content: flex-start; }
-        .node-right { justify-content: flex-end; }
-
-        .node-content {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            background-color: rgba(251, 245, 232, 0.85);
-            padding: 10px;
-            border-radius: 15px;
-        }
-
-        .circle-button {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #b71c1c, #8b0000);
-            border: 4px solid #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 2.5rem;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .circle-button:hover {
-            transform: scale(1.08);
-        }
-
-        .node-info {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .node-title {
-            font-size: 1.5rem;
-            color: #8b0000;
-            font-weight: bold;
-        }
-
-        .node-desc {
-            font-size: 0.95rem;
-            color: #333;
-        }
-
-        .progress-boxes {
-            display: flex;
-            gap: 6px;
-            margin-top: 4px;
-        }
-
-        .box {
-            width: 32px;
-            height: 32px;
-            border: 2px solid #8b0000;
-            background-color: #ffffff;
-        }
-
-        .recommendation-cloud {
-            position: absolute;
-            top: 35px;
-            right: 50px;
-            background-color: #fbc02d;
-            color: #5d4037;
-            font-weight: bold;
-            padding: 12px 25px;
-            border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 3;
-            font-size: 1.1rem;
-        }
-
-        .recommendation-cloud::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 20px;
-            border-width: 10px 10px 0;
-            border-style: solid;
-            border-color: #fbc02d transparent;
-            display: block;
-            width: 0;
-        }
-
-        .view-section {
-            display: none;
-        }
-
-        .view-section.active-view {
-            display: block;
-        }
-    </style>
+    .toggle-mode-container a {
+      color: #800000;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body class="login-bg">
+<body>
 
-    <!-- VISTA 1: PORTADA DE LOGIN -->
-    <div id="login-screen">
-        <img src="zoomi-logo.png" alt="Logo Zoomi" class="logo-img-main">
-        <button class="btn-login" id="btn-open-login">Iniciar sesión</button>
-    </div>
+  <!-- MODAL DE INICIAR SESIÓN / REGISTRO -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal-content">
+      <h2 id="modalTitle">Iniciar Sesión</h2>
+      
+      <!-- Cuadro de alertas -->
+      <div id="authAlert" class="alert-message"></div>
 
-    <!-- MODAL DE AUTENTICACIÓN -->
-    <div class="modal" id="modal-logout">
-        <div class="modal-content">
-            <h2 id="modal-title">Iniciar Sesión</h2>
-            
-            <div class="input-group">
-                <label for="login_email">Correo electrónico:</label>
-                <input type="email" id="login_email" placeholder="usuario@zoomi.com">
-            </div>
-
-            <div class="input-group">
-                <label for="login_password">Contraseña:</label>
-                <div class="password-wrapper">
-                    <input type="password" id="login_password" placeholder="••••••••">
-                    <span class="toggle-password" id="toggle-pass-btn">👁️</span>
-                </div>
-            </div>
-
-            <div id="modal-msg" class="message"></div>
-
-            <div class="modal-buttons">
-                <button class="btn-cancel" id="btn-cancel">Cancelar</button>
-                <button class="btn-submit" id="btn-action">Ingresar</button>
-            </div>
-
-            <div class="switch-mode" id="switch-btn">
-                ¿No tienes cuenta? Regístrate aquí
-            </div>
+      <form id="authForm">
+        <div class="input-group">
+          <label for="authEmail">Correo electrónico:</label>
+          <input type="email" id="authEmail" placeholder="correo@ejemplo.com" required>
         </div>
-    </div>
 
-    <!-- VISTA 2: PANEL PRINCIPAL -->
-    <div id="main-app">
-        <div class="dashboard-layout">
-            
-            <aside class="sidebar">
-                <div class="sidebar-top">
-                    <div class="sidebar-logo">
-                        <img src="zoomi-logo.png" alt="Zoomi Logo">
-                    </div>
-                    
-                    <nav class="nav-menu">
-                        <div class="nav-item active" id="tab-lecciones">
-                            <img src="Lecciones!.png" alt="Lecciones" class="nav-icon-img">
-                            <span>Lecciones</span>
-                        </div>
-                        <div class="nav-item" id="tab-home">
-                            <img src="Casita!.png" alt="Home" class="nav-icon-img">
-                            <span>Home</span>
-                        </div>
-                        <div class="nav-item" id="tab-yo">
-                            <img src="Yo!.png" alt="Yo" class="nav-icon-img">
-                            <span>Yo</span>
-                        </div>
-                        <div class="nav-item" id="tab-ajustes">
-                            <img src="Ajustes!.png" alt="Ajustes" class="nav-icon-img">
-                            <span>Ajustes</span>
-                        </div>
-                    </nav>
-                </div>
-
-                <div class="sidebar-bottom">
-                    <div class="nav-item" id="btn-logout">
-                        <img src="salida!.png" alt="Cerrar sesión" class="nav-icon-img">
-                        <span>Cerrar sesión</span>
-                    </div>
-                </div>
-            </aside>
-
-            <main class="content-area">
-                
-                <div id="view-lecciones" class="view-section active-view">
-                    
-                    <div class="welcome-banner" id="user-welcome-title">
-                        Bienvenido Usuario
-                    </div>
-
-                    <div class="recommendation-cloud">
-                        recomendaciones
-                    </div>
-
-                    <div class="path-container">
-                        <svg class="path-svg" viewBox="0 0 800 900" preserveAspectRatio="none">
-                            <path d="M 180 60 C 220 220, 600 180, 580 320 C 560 480, 180 420, 200 600 C 220 750, 620 720, 600 880" 
-                                  fill="none" stroke="#8b0000" stroke-width="45" stroke-linecap="round" />
-                        </svg>
-
-                        <div class="path-node node-left" style="margin-top: 20px;">
-                            <div class="node-content">
-                                <div class="circle-button">★</div>
-                                <div class="node-info">
-                                    <div class="node-title">Introducción al curso</div>
-                                    <div class="node-desc">Prueba inicial para saber en qué nivel estás.</div>
-                                    <div class="progress-boxes">
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="path-node node-right" style="margin-top: 50px;">
-                            <div class="node-content">
-                                <div class="node-info" style="text-align: right;">
-                                    <div class="node-title">Operaciones básicas</div>
-                                    <div class="node-desc">Sumar, restar, multiplicación y división</div>
-                                    <div class="progress-boxes" style="justify-content: flex-end;">
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                    </div>
-                                </div>
-                                <div class="circle-button">🔒</div>
-                            </div>
-                        </div>
-
-                        <div class="path-node node-left" style="margin-top: 60px;">
-                            <div class="node-content">
-                                <div class="circle-button">🔒</div>
-                                <div class="node-info">
-                                    <div class="node-title">Jerarquía de operaciones</div>
-                                    <div class="node-desc">Primero paréntesis, luego potencias, después multiplicación/división y al final suma/resta.</div>
-                                    <div class="progress-boxes">
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="path-node node-right" style="margin-top: 60px;">
-                            <div class="node-content">
-                                <div class="node-info" style="text-align: right;">
-                                    <div class="node-title">Fracciones</div>
-                                    <div class="node-desc">Partes de un entero: sumar, restar, multiplicar y dividir con denominadores distintos.</div>
-                                    <div class="progress-boxes" style="justify-content: flex-end;">
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                        <div class="box"></div>
-                                    </div>
-                                </div>
-                                <div class="circle-button">🔒</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div id="view-home" class="view-section">
-                    <h1 style="color: #8b0000;">Inicio / Home</h1>
-                    <p style="margin-top: 15px; font-size: 1.1rem;">Bienvenido al panel principal de tu cuenta.</p>
-                </div>
-
-                <div id="view-yo" class="view-section">
-                    <h1 style="color: #8b0000;">Perfil del Usuario</h1>
-                    <p style="margin-top: 15px; font-size: 1.1rem;">Aquí verás tu progreso personal y medallas acumuladas.</p>
-                </div>
-
-                <div id="view-ajustes" class="view-section">
-                    <h1 style="color: #8b0000;">Configuración</h1>
-                    <p style="margin-top: 15px; font-size: 1.1rem;">Ajustes de la cuenta y preferencias de interfaz.</p>
-                </div>
-
-            </main>
+        <div class="input-group">
+          <label for="authPassword">Contraseña:</label>
+          <input type="password" id="authPassword" placeholder="••••••••" required>
         </div>
+
+        <div class="button-group">
+          <button type="button" id="cancelBtn" class="btn-secondary">Cancelar</button>
+          <button type="submit" id="submitAuthBtn" class="btn-primary">Ingresar</button>
+        </div>
+      </form>
+
+      <div class="toggle-mode-container">
+        <p id="toggleText">¿No tienes cuenta? <a href="#" id="switchAuthLink">Regístrate aquí</a></p>
+      </div>
     </div>
+  </div>
 
-    <!-- FIREBASE Y LÓGICA DE APLICACIÓN -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            signOut, 
-            onAuthStateChanged 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  <!-- PANTALLA PRINCIPAL DE ZOOMI (OCULTA HASTA INICIAR SESIÓN) -->
+  <div id="mainApp" style="display: none; padding: 20px;">
+    <header>
+      <h1 id="welcomeUserMessage">Bienvenido a Zoomi</h1>
+      <button id="logoutBtn" class="btn-primary" style="width: auto;">Cerrar sesión</button>
+    </header>
+  </div>
 
-        // Configuración de Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyB3xMWqbZprDWeZ5Fq3xZnPQ7EPREREtSs",
-            authDomain: "zoomi-aa021.firebaseapp.com",
-            projectId: "zoomi-aa021",
-            storageBucket: "zoomi-aa021.firebasestorage.app",
-            messagingSenderId: "625440327174",
-            appId: "1:625440327174:web:359edb90f4fe7139bbe587"
-        };
+  <!-- SCRIPT CON LA LÓGICA DE FIREBASE Y VALIDACIONES -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      sendEmailVerification, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Inicializar Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    // Reemplaza estas credenciales si cambian en tu consola de Firebase
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY_AQUÍ",
+      authDomain: "zoomi-aa021.firebaseapp.com",
+      projectId: "zoomi-aa021",
+      storageBucket: "zoomi-aa021.appspot.com",
+      messagingSenderId: "TU_MESSAGING_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
 
-        let isRegisterMode = false;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        // Elementos DOM
-        const modal = document.getElementById('modal-logout');
-        const modalTitle = document.getElementById('modal-title');
-        const btnAction = document.getElementById('btn-action');
-        const switchBtn = document.getElementById('switch-btn');
-        const emailInput = document.getElementById('login_email');
-        const passInput = document.getElementById('login_password');
-        const msgDiv = document.getElementById('modal-msg');
-        const loginScreen = document.getElementById('login-screen');
-        const mainApp = document.getElementById('main-app');
+    const authModal = document.getElementById("authModal");
+    const mainApp = document.getElementById("mainApp");
+    const modalTitle = document.getElementById("modalTitle");
+    const authForm = document.getElementById("authForm");
+    const authEmail = document.getElementById("authEmail");
+    const authPassword = document.getElementById("authPassword");
+    const submitAuthBtn = document.getElementById("submitAuthBtn");
+    const toggleText = document.getElementById("toggleText");
+    const authAlert = document.getElementById("authAlert");
+    const welcomeUserMessage = document.getElementById("welcomeUserMessage");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
 
-        // Monitorear estado de autenticación de forma segura
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                closeModal();
-                loginScreen.style.display = 'none';
-                mainApp.style.display = 'block';
-                document.body.classList.remove('login-bg');
-                
-                let username = user.email.split('@')[0];
-                document.getElementById('user-welcome-title').innerText = `Bienvenido ${username}`;
-            } else {
-                mainApp.style.display = 'none';
-                loginScreen.style.display = 'flex';
-                document.body.classList.add('login-bg');
-            }
-        });
+    let isRegisterMode = false;
 
-        // Al hacer clic en "Iniciar sesión", forzar el modo de inicio de sesión por defecto
-        document.getElementById('btn-open-login').onclick = () => {
-            setLoginMode();
-            modal.classList.add('active');
-            clearForm();
-        };
+    function showAlert(message, isError = true) {
+      authAlert.textContent = message;
+      authAlert.style.color = isError ? "#721c24" : "#155724";
+      authAlert.style.backgroundColor = isError ? "#f8d7da" : "#d4edda";
+      authAlert.style.border = isError ? "1px solid #f5c6cb" : "1px solid #c3e6cb";
+      authAlert.style.display = "block";
+    }
 
-        document.getElementById('btn-cancel').onclick = () => {
-            closeModal();
-        };
+    function clearAlert() {
+      authAlert.style.display = "none";
+      authAlert.textContent = "";
+    }
 
-        document.getElementById('toggle-pass-btn').onclick = () => {
-            passInput.type = (passInput.type === 'password') ? 'text' : 'password';
-        };
+    function setAuthMode(register) {
+      isRegisterMode = register;
+      clearAlert();
+      authForm.reset();
 
-        emailInput.oninput = hideMessage;
-        passInput.oninput = hideMessage;
+      if (isRegisterMode) {
+        modalTitle.textContent = "Crear Cuenta";
+        submitAuthBtn.textContent = "Registrarse";
+        toggleText.innerHTML = '¿Ya tienes cuenta? <a href="#" id="switchAuthLink">Inicia sesión aquí</a>';
+      } else {
+        modalTitle.textContent = "Iniciar Sesión";
+        submitAuthBtn.textContent = "Ingresar";
+        toggleText.innerHTML = '¿No tienes cuenta? <a href="#" id="switchAuthLink">Regístrate aquí</a>';
+      }
 
-        // Alternar entre Inicio de Sesión y Registro
-        switchBtn.onclick = () => {
-            if (isRegisterMode) {
-                setLoginMode();
-            } else {
-                setRegisterMode();
-            }
-        };
+      document.getElementById("switchAuthLink").addEventListener("click", (e) => {
+        e.preventDefault();
+        setAuthMode(!isRegisterMode);
+      });
+    }
 
-        function setLoginMode() {
-            isRegisterMode = false;
-            modalTitle.innerText = 'Iniciar Sesión';
-            btnAction.innerText = 'Ingresar';
-            switchBtn.innerText = '¿No tienes cuenta? Regístrate aquí';
-            clearForm();
+    setAuthMode(false);
+
+    // Requisito de seguridad: mínimo 8 caracteres, al menos 1 mayúscula y 1 número
+    function isPasswordStrong(password) {
+      const regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+      return regex.test(password);
+    }
+
+    authForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearAlert();
+
+      const email = authEmail.value.trim();
+      const password = authPassword.value;
+
+      if (isRegisterMode) {
+        // --- FILTRO DE SEGURIDAD EN REGISTRO ---
+        if (!isPasswordStrong(password)) {
+          showAlert("La contraseña debe tener al menos 8 caracteres, incluir una mayúscula y un número.");
+          return;
         }
 
-        function setRegisterMode() {
-            isRegisterMode = true;
-            modalTitle.innerText = 'Registrarse';
-            btnAction.innerText = 'Crear cuenta';
-            switchBtn.innerText = '¿Ya tienes cuenta? Inicia sesión';
-            clearForm();
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          // Enviar correo de verificación para asegurar que el correo es real
+          await sendEmailVerification(user);
+          await signOut(auth);
+
+          showAlert("¡Cuenta creada! Se ha enviado un correo de confirmación. Por favor verifícalo antes de iniciar sesión.", false);
+          
+          setTimeout(() => {
+            setAuthMode(false);
+          }, 4000);
+
+        } catch (error) {
+          if (error.code === 'auth/email-already-in-use') {
+            showAlert("Este correo electrónico ya está registrado. Cambia a 'Iniciar sesión'.");
+          } else {
+            showAlert("Error al registrarse: " + error.message);
+          }
         }
 
-        // Validación y llamadas estrictas a Firebase
-        btnAction.onclick = async () => {
-            const email = emailInput.value.trim();
-            const password = passInput.value;
+      } else {
+        // --- FILTRO DE SEGURIDAD EN INICIO DE SESIÓN ---
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
 
-            if (!email || !password) {
-                showMessage('Por favor completa todos los campos.', 'error-message');
-                return;
-            }
+          // Si el correo no está verificado, no permite ingresar
+          if (!user.emailVerified) {
+            showAlert("Tu correo aún no ha sido verificado. Revisa tu bandeja de entrada o spam.");
+            await signOut(auth);
+            return;
+          }
 
-            btnAction.disabled = true;
-            btnAction.innerText = 'Verificando...';
+          authModal.style.display = "none";
+          mainApp.style.display = "block";
 
-            try {
-                if (isRegisterMode) {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                } else {
-                    await signInWithEmailAndPassword(auth, email, password);
-                }
-            } catch (error) {
-                let text = 'Ocurrió un error al procesar la solicitud.';
-                if (error.code === 'auth/invalid-email') text = 'El correo electrónico no es válido.';
-                if (error.code === 'auth/user-not-found') text = 'El correo no se encuentra registrado.';
-                if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') text = 'Contraseña o usuario incorrectos.';
-                if (error.code === 'auth/email-already-in-use') text = 'Este correo ya está registrado. Haz clic abajo para Iniciar Sesión.';
-                if (error.code === 'auth/weak-password') text = 'La contraseña debe tener al menos 6 caracteres.';
-                
-                showMessage(text, 'error-message');
-            } finally {
-                btnAction.disabled = false;
-                btnAction.innerText = isRegisterMode ? 'Crear cuenta' : 'Ingresar';
-            }
-        };
-
-        // Cerrar sesión limpiando el estado de autenticación
-        document.getElementById('btn-logout').onclick = async () => {
-            try {
-                await signOut(auth);
-            } catch (e) {
-                console.error("Error al cerrar sesión", e);
-            }
-        };
-
-        // Cambiar entre pestañas
-        document.getElementById('tab-lecciones').onclick = function() { switchTab(this, 'view-lecciones'); };
-        document.getElementById('tab-home').onclick = function() { switchTab(this, 'view-home'); };
-        document.getElementById('tab-yo').onclick = function() { switchTab(this, 'view-yo'); };
-        document.getElementById('tab-ajustes').onclick = function() { switchTab(this, 'view-ajustes'); };
-
-        function switchTab(element, viewId) {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-            document.querySelectorAll('.view-section').forEach(view => view.classList.remove('active-view'));
-            const activeView = document.getElementById(viewId);
-            if (activeView) activeView.classList.add('active-view');
+        } catch (error) {
+          showAlert("Correo o contraseña incorrectos.");
         }
+      }
+    });
 
-        function closeModal() {
-            modal.classList.remove('active');
-            clearForm();
-        }
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.emailVerified) {
+        welcomeUserMessage.textContent = `Bienvenido ${user.email.split('@')[0]}`;
+        authModal.style.display = "none";
+        mainApp.style.display = "block";
+      } else {
+        mainApp.style.display = "none";
+        authModal.style.display = "flex";
+      }
+    });
 
-        function clearForm() {
-            emailInput.value = '';
-            passInput.value = '';
-            passInput.type = 'password';
-            hideMessage();
-        }
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      setAuthMode(false);
+    });
 
-        function hideMessage() {
-            msgDiv.style.display = 'none';
-            msgDiv.className = 'message';
-        }
-
-        function showMessage(text, typeClass) {
-            msgDiv.innerText = text;
-            msgDiv.className = `message ${typeClass}`;
-            msgDiv.style.display = 'block';
-        }
-    </script>
-
+    cancelBtn.addEventListener("click", () => {
+      authForm.reset();
+      clearAlert();
+    });
+  </script>
 </body>
 </html>
