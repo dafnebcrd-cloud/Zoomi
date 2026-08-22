@@ -21,17 +21,18 @@
             padding: 20px;
         }
 
-        .main-container {
-            background-color: #fffdfa;
-            border: 3px solid #b71c1c;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 900px;
-            height: 550px;
+        /* VISTA 1: LOGIN / PORTADA */
+        #login-screen {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            width: 100%;
+            max-width: 900px;
+            height: 550px;
+            background-color: #fffdfa;
+            border: 3px solid #b71c1c;
+            border-radius: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             gap: 25px;
         }
@@ -59,7 +60,7 @@
             color: #ffffff;
         }
 
-        /* Modal Agrandado */
+        /* MODAL FLOTANTE */
         .modal {
             display: none;
             position: fixed;
@@ -82,7 +83,7 @@
             border: 3px solid #8b0000;
             border-radius: 20px;
             padding: 40px;
-            width: 500px !important; /* Forzar ventana más ancha */
+            width: 500px;
             max-width: 90%;
             display: flex;
             flex-direction: column;
@@ -183,15 +184,76 @@
             cursor: pointer;
             text-decoration: underline;
         }
+
+        /* VISTA 2: INTERIOR DE LA PÁGINA (CUERPO PRINCIPAL) */
+        #main-app {
+            display: none; /* Oculto por defecto */
+            width: 100%;
+            max-width: 1000px;
+            min-height: 80vh;
+            background-color: #fffdfa;
+            border: 3px solid #b71c1c;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #8b0000;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .app-header img {
+            height: 50px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .app-content {
+            padding: 20px 0;
+        }
+
+        .welcome-card {
+            background-color: #fbf3e7;
+            border: 1px solid #d7ccc8;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .welcome-card h1 {
+            color: #8b0000;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
+    <!-- VISTA 1: INICIO DE SESIÓN -->
+    <div id="login-screen">
         <img src="zoomi-logo.png" alt="Logo Zoomi" class="logo-img-main">
         <button class="btn-login" onclick="openLogoutModal()">Iniciar sesión</button>
     </div>
 
+    <!-- MODAL DE AUTENTICACIÓN -->
     <div class="modal" id="modal-logout">
         <div class="modal-content">
             <h2 id="modal-title">Iniciar Sesión</h2>
@@ -220,6 +282,25 @@
                 ¿No tienes cuenta? Regístrate aquí
             </div>
         </div>
+    </div>
+
+    <!-- VISTA 2: INTERIOR DE LA PÁGINA (DASHBOARD) -->
+    <div id="main-app">
+        <header class="app-header">
+            <img src="zoomi-logo.png" alt="Logo Zoomi">
+            <div class="user-info">
+                <span id="user-display-email" style="font-weight: bold; color: #333;"></span>
+                <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+            </div>
+        </header>
+
+        <main class="app-content">
+            <div class="welcome-card">
+                <h1>¡Bienvenido a Zoomi!</h1>
+                <p>Has ingresado correctamente al panel principal.</p>
+            </div>
+            <!-- Aquí puedes incluir el resto de secciones, módulos o contenido de tu plataforma -->
+        </main>
     </div>
 
     <script>
@@ -294,22 +375,31 @@
                     setTimeout(() => toggleMode(), 1000);
                 }
             } else {
-                // Si la clave o el correo son correctos o si es la primera vez que entras con tu correo
                 if (users[email]) {
                     if (users[email] === password) {
-                        alert('¡Inicio de sesión exitoso!');
-                        closeLogoutModal();
+                        enterApp(email);
                     } else {
                         showMessage('Contraseña incorrecta.', 'error-message');
                     }
                 } else {
-                    // Auto-registrar tu correo la primera vez si intentas ingresar directo
+                    // Registro automático en el primer acceso
                     users[email] = password;
                     localStorage.setItem('zoomi_users', JSON.stringify(users));
-                    alert('¡Cuenta registrada e inicio de sesión exitoso!');
-                    closeLogoutModal();
+                    enterApp(email);
                 }
             }
+        }
+
+        function enterApp(email) {
+            closeLogoutModal();
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            document.getElementById('user-display-email').innerText = email;
+        }
+
+        function logout() {
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
         }
 
         function showMessage(text, typeClass) {
