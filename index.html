@@ -18,39 +18,39 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 30px;
         }
 
-        /* VISTA 1: PORTADA DE LOGIN */
+        /* VISTA 1: PORTADA DE LOGIN AGRANDADA */
         #login-screen {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            max-width: 900px;
-            height: 550px;
+            width: 95%;
+            max-width: 1300px;
+            height: 82vh;
             background-color: #fffdfa;
             border: 3px solid #b71c1c;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            gap: 25px;
+            border-radius: 25px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            gap: 35px;
         }
 
         .logo-img-main {
-            max-width: 280px;
+            max-width: 380px;
             height: auto;
             object-fit: contain;
         }
 
         .btn-login {
-            background-color: #fbf3e7;
+            background-color: #fffdfa;
             color: #8b0000;
             border: 2px solid #8b0000;
-            padding: 12px 35px;
-            font-size: 1.1rem;
+            padding: 14px 45px;
+            font-size: 1.2rem;
             font-weight: bold;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -83,7 +83,7 @@
             border: 3px solid #8b0000;
             border-radius: 20px;
             padding: 40px;
-            width: 500px;
+            width: 520px;
             max-width: 90%;
             display: flex;
             flex-direction: column;
@@ -188,14 +188,14 @@
         /* VISTA 2: INTERIOR DE LA PÁGINA (CUERPO PRINCIPAL) */
         #main-app {
             display: none;
-            width: 100%;
-            max-width: 1000px;
-            min-height: 80vh;
+            width: 95%;
+            max-width: 1300px;
+            min-height: 82vh;
             background-color: #fffdfa;
             border: 3px solid #b71c1c;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
         }
 
         .app-header {
@@ -208,7 +208,7 @@
         }
 
         .app-header img {
-            height: 50px;
+            height: 60px;
         }
 
         .user-info {
@@ -221,8 +221,8 @@
             background-color: #8b0000;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
         }
@@ -234,14 +234,15 @@
         .welcome-card {
             background-color: #fbf3e7;
             border: 1px solid #d7ccc8;
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 15px;
+            padding: 30px;
             text-align: center;
         }
 
         .welcome-card h1 {
             color: #8b0000;
             margin-bottom: 10px;
+            font-size: 2rem;
         }
     </style>
 </head>
@@ -299,7 +300,6 @@
                 <h1>¡Bienvenido a Zoomi!</h1>
                 <p>Has ingresado correctamente al panel principal.</p>
             </div>
-            <!-- Agrega el resto de secciones o elementos de tu web aquí -->
         </main>
     </div>
 
@@ -369,10 +369,10 @@
                 if (users[email]) {
                     showMessage('Este correo ya está registrado.', 'error-message');
                 } else {
+                    // Guardar y entrar automáticamente
                     users[email] = password;
                     localStorage.setItem('zoomi_users', JSON.stringify(users));
-                    showMessage('¡Cuenta registrada! Inicia sesión ahora.', 'success-message');
-                    setTimeout(() => toggleMode(), 1000);
+                    enterApp(email);
                 }
             } else {
                 if (users[email]) {
@@ -382,6 +382,7 @@
                         showMessage('Contraseña incorrecta.', 'error-message');
                     }
                 } else {
+                    // Si el correo no existía, lo crea y le permite entrar directo
                     users[email] = password;
                     localStorage.setItem('zoomi_users', JSON.stringify(users));
                     enterApp(email);
