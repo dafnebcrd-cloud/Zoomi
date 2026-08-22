@@ -12,6 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        /* FONDO GENERAL POR DEFECTO (CUANDO SE INICIA SESIÓN) */
         body {
             background-color: #f5f5dc;
             display: flex;
@@ -19,9 +20,18 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            transition: background 0.3s ease;
         }
 
-        /* VISTA 1: PORTADA DE LOGIN CON IMAGEN DE FONDO */
+        /* FONDO SOLO PARA LA PANTALLA DE LOGIN */
+        body.login-bg {
+            background-image: url('fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* VISTA 1: PORTADA DE LOGIN */
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -30,13 +40,10 @@
             width: 95%;
             max-width: 1300px;
             height: 85vh;
-            background-image: url('fondo.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-color: rgba(251, 245, 232, 0.92); /* Color claro interior */
             border: 3px solid #b71c1c;
             border-radius: 25px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
             gap: 35px;
         }
 
@@ -102,7 +109,7 @@
         .modal-content h2 {
             color: #8b0000;
             text-align: center;
-            font-size: 1.8rem camped;
+            font-size: 1.8rem;
         }
 
         .input-group {
@@ -226,7 +233,7 @@
         }
 
         .sidebar-top {
-             Unleash: flex;
+            display: flex;
             flex-direction: column;
             gap: 25px;
         }
@@ -430,9 +437,9 @@
         }
     </style>
 </head>
-<body>
+<body class="login-bg">
 
-    <!-- VISTA 1: PORTADA DE LOGIN CON FONDO -->
+    <!-- VISTA 1: PORTADA DE LOGIN -->
     <div id="login-screen">
         <img src="zoomi-logo.png" alt="Logo Zoomi" class="logo-img-main">
         <button class="btn-login" onclick="openLogoutModal()">Iniciar sesión</button>
@@ -705,6 +712,9 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
 
+            // REMOVE EL FONDO AL INGRESAR A LA PLATAFORMA
+            document.body.classList.remove('login-bg');
+
             let username = email.split('@')[0];
             document.getElementById('user-welcome-title').innerText = `Bienvenido ${username}`;
         }
@@ -712,6 +722,9 @@
         function logout() {
             document.getElementById('main-app').style.display = 'none';
             document.getElementById('login-screen').style.display = 'flex';
+
+            // RESTAURA EL FONDO AL CERRAR SESIÓN
+            document.body.classList.add('login-bg');
         }
 
         function showMessage(text, typeClass) {
