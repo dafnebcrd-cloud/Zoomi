@@ -34,7 +34,6 @@
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             gap: 25px;
-            position: relative;
         }
 
         .logo-img-main {
@@ -60,7 +59,7 @@
             color: #ffffff;
         }
 
-        /* Modal de Iniciar Sesión */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -115,16 +114,14 @@
             outline: none;
         }
 
-        .input-group input:focus {
-            border-color: #8b0000;
-        }
-
-        .error-message {
-            color: #d32f2f;
+        .message {
             font-size: 0.85rem;
             display: none;
             text-align: center;
         }
+
+        .error-message { color: #d32f2f; }
+        .success-message { color: #2e7d32; }
 
         .modal-buttons {
             display: flex;
@@ -150,6 +147,14 @@
             border-radius: 6px;
             cursor: pointer;
         }
+
+        .switch-mode {
+            font-size: 0.85rem;
+            text-align: center;
+            color: #8b0000;
+            cursor: pointer;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -159,10 +164,10 @@
         <button class="btn-login" onclick="openLogoutModal()">Iniciar sesión</button>
     </div>
 
-    <!-- Ventana Modal de Login -->
+    <!-- Modal para Login y Registro -->
     <div class="modal" id="modal-logout">
         <div class="modal-content">
-            <h2>Iniciar Sesión</h2>
+            <h2 id="modal-title">Iniciar Sesión</h2>
             
             <div class="input-group">
                 <label for="login_email">Correo electrónico:</label>
@@ -174,47 +179,102 @@
                 <input type="password" id="login_password" placeholder="••••••••">
             </div>
 
-            <div id="login-error" class="error-message">Correo o contraseña incorrectos.</div>
+            <div id="modal-msg" class="message"></div>
 
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closeLogoutModal()">Cancelar</button>
-                <button class="btn-submit" onclick="confirmLogin()">Ingresar</button>
+                <button class="btn-submit" id="btn-action" onclick="handleAuth()">Ingresar</button>
+            </div>
+
+            <div class="switch-mode" id="switch-btn" onclick="toggleMode()">
+                ¿No tienes cuenta? Regístrate aquí
             </div>
         </div>
     </div>
 
     <script>
-        // Credenciales válidas registradas de prueba
-        const USERS_DB = {
-            "usuario@zoomi.com": "123456",
-            "admin@zoomi.com": "zoomi2026"
-        };
+        let isRegisterMode = false;
+
+        function getStoredUsers() {
+            const users = localStorage.getItem('zoomi_users');
+            return users ? JSON.parse(users) : {};
+        }
 
         function openLogoutModal() {
             document.getElementById('modal-logout').classList.add('active');
-            document.getElementById('login-error').style.display = 'none';
+            clearForm();
         }
 
         function closeLogoutModal() {
             document.getElementById('modal-logout').classList.remove('active');
-            document.getElementById('login_email').value = '';
-            document.getElementById('login_password').value = '';
-            document.getElementById('login-error').style.display = 'none';
+            clearForm();
         }
 
-        function confirmLogin() {
-            const emailInput = document.getElementById('login_email').value.trim();
-            const passwordInput = document.getElementById('login_password').value;
-            const errorElement = document.getElementById('login-error');
+        function clearForm() {
+            document.getElementById('login_email').value = '';
+            document.getElementById('login_password').value = '';
+            const msg = document.getElementById('modal-msg');
+            msg.style.display = 'none';
+            msg.className = 'message';
+        }
 
-            // Verificar si el correo existe en la base de datos y la contraseña coincide
-            if (USERS_DB[emailInput] && USERS_DB[emailInput] === passwordInput) {
-                alert('¡Inicio de sesión exitoso!');
-                closeLogoutModal();
+        function toggleMode() {
+            isRegisterMode = !isRegisterMode;
+            clearForm();
+
+            const title = document.getElementById('modal-title');
+            const btnAction = document.getElementById('btn-action');
+            const switchBtn = document.getElementById('switch-btn');
+
+            if (isRegisterMode) {
+                title.innerText = 'Registrarse';
+                btnAction.innerText = 'Crear cuenta';
+                switchBtn.innerText = '¿Ya tienes cuenta? Inicia sesión';
             } else {
-                errorElement.innerText = "Correo o contraseña incorrectos.";
-                errorElement.style.display = 'block';
+                title.innerText = 'Iniciar Sesión';
+                btnAction.innerText = 'Ingresar';
+                switchBtn.innerText = '¿No tienes cuenta? Regístrate aquí';
             }
+        }
+
+        function handleAuth() {
+            const email = document.getElementById('login_email').value.trim();
+            const password = document.getElementById('login_password').value;
+            const msg = document.getElementById('modal-msg');
+
+            if (!email || !password) {
+                showMessage('Por favor completa todos los campos', 'error-message');
+                return;
+            }
+
+            const users = getStoredUsers();
+
+            if (isRegisterMode) {
+                // Registrar usuario nuevo
+                if (users[email]) {
+                    showMessage('Este correo ya está registrado.', 'error-message');
+                } else {
+                    users[email] = password;
+                    localStorage.setItem('zoomi_users', JSON.stringify(users));
+                    showMessage('¡Cuenta creada con éxito! Ahora inicia sesión.', 'success-message');
+                    setTimeout(() => toggleMode(), 1200);
+                }
+            } else {
+                // Iniciar sesión
+                if (users[email] && users[email] === password) {
+                    alert('¡Inicio de sesión exitoso!');
+                    closeLogoutModal();
+                } else {
+                    showMessage('Correo o contraseña incorrectos.', 'error-message');
+                }
+            }
+        }
+
+        function showMessage(text, typeClass) {
+            const msg = document.getElementById('modal-msg');
+            msg.innerText = text;
+            msg.className = `message ${typeClass}`;
+            msg.style.display = 'block';
         }
     </script>
 
