@@ -59,7 +59,7 @@
             color: #ffffff;
         }
 
-        /* Modal */
+        /* Modal Agrandado */
         .modal {
             display: none;
             position: fixed;
@@ -79,45 +79,68 @@
 
         .modal-content {
             background-color: #fffdfa;
-            border: 2px solid #8b0000;
-            border-radius: 15px;
-            padding: 30px;
-            width: 320px;
+            border: 3px solid #8b0000;
+            border-radius: 20px;
+            padding: 40px;
+            width: 450px; /* Ventana más ancha */
+            max-width: 90%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            gap: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
         .modal-content h2 {
             color: #8b0000;
             text-align: center;
-            font-size: 1.4rem;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
         .input-group label {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #333;
             font-weight: bold;
         }
 
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
         .input-group input {
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
             outline: none;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            border-color: #8b0000;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 1.2rem;
         }
 
         .message {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             display: none;
             text-align: center;
+            font-weight: bold;
         }
 
         .error-message { color: #d32f2f; }
@@ -127,33 +150,40 @@
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
+            gap: 15px;
         }
 
         .btn-submit {
             background-color: #8b0000;
             color: white;
             border: none;
-            padding: 8px 18px;
-            border-radius: 6px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 1rem;
+            flex: 1;
         }
 
         .btn-cancel {
-            background-color: #ccc;
+            background-color: #e0e0e0;
             color: #333;
             border: none;
-            padding: 8px 18px;
-            border-radius: 6px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            flex: 1;
         }
 
         .switch-mode {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             text-align: center;
             color: #8b0000;
             cursor: pointer;
             text-decoration: underline;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -176,7 +206,10 @@
 
             <div class="input-group">
                 <label for="login_password">Contraseña:</label>
-                <input type="password" id="login_password" placeholder="••••••••">
+                <div class="password-wrapper">
+                    <input type="password" id="login_password" placeholder="••••••••">
+                    <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+                </div>
             </div>
 
             <div id="modal-msg" class="message"></div>
@@ -195,9 +228,17 @@
     <script>
         let isRegisterMode = false;
 
+        // Cargar usuarios guardados o crear una base inicial si está vacía
         function getStoredUsers() {
-            const users = localStorage.getItem('zoomi_users');
-            return users ? JSON.parse(users) : {};
+            let users = localStorage.getItem('zoomi_users');
+            if (!users) {
+                const defaultUsers = {
+                    "admin@zoomi.com": "123456"
+                };
+                localStorage.setItem('zoomi_users', JSON.stringify(defaultUsers));
+                return defaultUsers;
+            }
+            return JSON.parse(users);
         }
 
         function openLogoutModal() {
@@ -213,9 +254,15 @@
         function clearForm() {
             document.getElementById('login_email').value = '';
             document.getElementById('login_password').value = '';
+            document.getElementById('login_password').type = 'password';
             const msg = document.getElementById('modal-msg');
             msg.style.display = 'none';
             msg.className = 'message';
+        }
+
+        function togglePasswordVisibility() {
+            const passInput = document.getElementById('login_password');
+            passInput.type = (passInput.type === 'password') ? 'text' : 'password';
         }
 
         function toggleMode() {
@@ -240,7 +287,6 @@
         function handleAuth() {
             const email = document.getElementById('login_email').value.trim();
             const password = document.getElementById('login_password').value;
-            const msg = document.getElementById('modal-msg');
 
             if (!email || !password) {
                 showMessage('Por favor completa todos los campos', 'error-message');
@@ -250,22 +296,20 @@
             const users = getStoredUsers();
 
             if (isRegisterMode) {
-                // Registrar usuario nuevo
                 if (users[email]) {
                     showMessage('Este correo ya está registrado.', 'error-message');
                 } else {
                     users[email] = password;
                     localStorage.setItem('zoomi_users', JSON.stringify(users));
-                    showMessage('¡Cuenta creada con éxito! Ahora inicia sesión.', 'success-message');
+                    showMessage('¡Cuenta registrada con éxito! Ahora inicia sesión.', 'success-message');
                     setTimeout(() => toggleMode(), 1200);
                 }
             } else {
-                // Iniciar sesión
                 if (users[email] && users[email] === password) {
                     alert('¡Inicio de sesión exitoso!');
                     closeLogoutModal();
                 } else {
-                    showMessage('Correo o contraseña incorrectos.', 'error-message');
+                    showMessage('Correo o contraseña incorrectos. Si no tienes cuenta, haz clic abajo para registrarte.', 'error-message');
                 }
             }
         }
