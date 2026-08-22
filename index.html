@@ -179,6 +179,11 @@
             flex: 1;
         }
 
+        .btn-submit:disabled {
+            background-color: #a55151;
+            cursor: not-allowed;
+        }
+
         .btn-cancel {
             background-color: #e0e0e0;
             color: #333;
@@ -631,7 +636,7 @@
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Configuración de Firebase con tus credenciales reales
+        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyB3xMWqbZprDWeZ5Fq3xZnPQ7EPREREtSs",
             authDomain: "zoomi-aa021.firebaseapp.com",
@@ -658,7 +663,7 @@
         const loginScreen = document.getElementById('login-screen');
         const mainApp = document.getElementById('main-app');
 
-        // Escuchar cambios de estado de autenticación
+        // Monitorear estado de autenticación
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 closeModal();
@@ -675,7 +680,7 @@
             }
         });
 
-        // Eventos
+        // Eventos de interfaz
         document.getElementById('btn-open-login').onclick = () => {
             modal.classList.add('active');
             clearForm();
@@ -707,6 +712,7 @@
             }
         };
 
+        // Validación estricta con Firebase
         btnAction.onclick = async () => {
             const email = emailInput.value.trim();
             const password = passInput.value;
@@ -715,6 +721,9 @@
                 showMessage('Por favor completa todos los campos.', 'error-message');
                 return;
             }
+
+            btnAction.disabled = true;
+            btnAction.innerText = 'Verificando...';
 
             try {
                 if (isRegisterMode) {
@@ -731,6 +740,9 @@
                 if (error.code === 'auth/weak-password') text = 'La contraseña debe tener al menos 6 caracteres.';
                 
                 showMessage(text, 'error-message');
+            } finally {
+                btnAction.disabled = false;
+                btnAction.innerText = isRegisterMode ? 'Crear cuenta' : 'Ingresar';
             }
         };
 
@@ -738,7 +750,7 @@
             signOut(auth);
         };
 
-        // Navegación de pestañas
+        // Cambiar entre pestañas
         document.getElementById('tab-lecciones').onclick = function() { switchTab(this, 'view-lecciones'); };
         document.getElementById('tab-home').onclick = function() { switchTab(this, 'view-home'); };
         document.getElementById('tab-yo').onclick = function() { switchTab(this, 'view-yo'); };
