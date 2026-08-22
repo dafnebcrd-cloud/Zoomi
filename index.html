@@ -34,30 +34,35 @@
             border: 3px solid #b71c1c;
             border-radius: 25px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            gap: 35px;
+            gap: 40px;
         }
 
+        /* LOGO MÁS GRANDE */
         .logo-img-main {
-            max-width: 380px;
+            max-width: 520px;
+            width: 80%;
             height: auto;
             object-fit: contain;
         }
 
+        /* BOTÓN MÁS GRANDE */
         .btn-login {
             background-color: #fffdfa;
             color: #8b0000;
-            border: 2px solid #8b0000;
-            padding: 14px 45px;
-            font-size: 1.2rem;
+            border: 3px solid #8b0000;
+            padding: 18px 65px;
+            font-size: 1.5rem;
             font-weight: bold;
-            border-radius: 30px;
+            border-radius: 40px;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.15);
         }
 
         .btn-login:hover {
             background-color: #8b0000;
             color: #ffffff;
+            transform: scale(1.03);
         }
 
         /* MODAL FLOTANTE DE AUTENTICACIÓN */
@@ -113,6 +118,7 @@
             position: relative;
             display: flex;
             align-items: center;
+            width: 100%;
         }
 
         .input-group input {
@@ -185,7 +191,7 @@
             text-decoration: underline;
         }
 
-        /* VISTA 2: INTERIOR DE LA PÁGINA (DASHBOARD COMPLETO) */
+        /* VISTA 2: INTERIOR DE LA PÁGINA */
         #main-app {
             display: none;
             width: 100%;
@@ -259,7 +265,6 @@
             background-color: #fff3f0;
         }
 
-        /* Estado del botón activo (animación anaranjada) */
         .nav-item.active {
             background-color: #f26b52;
             color: #ffffff;
@@ -278,7 +283,7 @@
             padding-right: 15px;
         }
 
-        /* ÁREA DE CONTENIDO (CURSO Y MAPA) */
+        /* ÁREA DE CONTENIDO */
         .content-area {
             flex: 1;
             overflow-y: auto;
@@ -306,7 +311,6 @@
             padding-bottom: 80px;
         }
 
-        /* Dibujo del camino */
         .path-svg {
             position: absolute;
             top: 0;
@@ -388,11 +392,6 @@
             background-color: #ffffff;
         }
 
-        .box.filled {
-            background-color: #8b0000;
-        }
-
-        /* Nube de recomendaciones */
         .recommendation-cloud {
             position: absolute;
             top: -10px;
@@ -419,7 +418,6 @@
             width: 0;
         }
 
-        /* Secciones secundarias vacías para demostración */
         .view-section {
             display: none;
         }
@@ -444,13 +442,13 @@
             
             <div class="input-group">
                 <label for="login_email">Correo electrónico:</label>
-                <input type="email" id="login_email" placeholder="usuario@zoomi.com">
+                <input type="email" id="login_email" placeholder="usuario@zoomi.com" oninput="hideMessage()">
             </div>
 
             <div class="input-group">
                 <label for="login_password">Contraseña:</label>
                 <div class="password-wrapper">
-                    <input type="password" id="login_password" placeholder="••••••••">
+                    <input type="password" id="login_password" placeholder="••••••••" oninput="hideMessage()">
                     <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
                 </div>
             </div>
@@ -468,11 +466,10 @@
         </div>
     </div>
 
-    <!-- VISTA 2: PANEL PRINCIPAL (DASHBOARD) -->
+    <!-- VISTA 2: PANEL PRINCIPAL -->
     <div id="main-app">
         <div class="dashboard-layout">
             
-            <!-- BARRA LATERAL CON BOTONES -->
             <aside class="sidebar">
                 <div class="sidebar-top">
                     <div class="sidebar-logo">
@@ -507,10 +504,8 @@
                 </div>
             </aside>
 
-            <!-- CONTENIDO PRINCIPAL -->
             <main class="content-area">
                 
-                <!-- PANTALLA: LECCIONES -->
                 <div id="view-lecciones" class="view-section active-view">
                     
                     <div class="welcome-banner" id="user-welcome-title">
@@ -522,13 +517,11 @@
                     </div>
 
                     <div class="path-container">
-                        <!-- SVG para dibujar el camino sinuoso -->
                         <svg class="path-svg" viewBox="0 0 800 900" preserveAspectRatio="none">
                             <path d="M 180 60 C 220 220, 600 180, 580 320 C 560 480, 180 420, 200 600 C 220 750, 620 720, 600 880" 
                                   fill="none" stroke="#8b0000" stroke-width="45" stroke-linecap="round" />
                         </svg>
 
-                        <!-- NODO 1: INTRODUCCIÓN -->
                         <div class="path-node node-left" style="margin-top: 20px;">
                             <div class="node-content">
                                 <div class="circle-button">★</div>
@@ -546,7 +539,6 @@
                             </div>
                         </div>
 
-                        <!-- NODO 2: OPERACIONES BÁSICAS -->
                         <div class="path-node node-right" style="margin-top: 50px;">
                             <div class="node-content">
                                 <div class="node-info" style="text-align: right;">
@@ -564,7 +556,6 @@
                             </div>
                         </div>
 
-                        <!-- NODO 3: JERARQUÍA DE OPERACIONES -->
                         <div class="path-node node-left" style="margin-top: 60px;">
                             <div class="node-content">
                                 <div class="circle-button">🔒</div>
@@ -582,7 +573,6 @@
                             </div>
                         </div>
 
-                        <!-- NODO 4: FRACCIONES -->
                         <div class="path-node node-right" style="margin-top: 60px;">
                             <div class="node-content">
                                 <div class="node-info" style="text-align: right;">
@@ -603,19 +593,16 @@
                     </div>
                 </div>
 
-                <!-- PANTALLA: HOME -->
                 <div id="view-home" class="view-section">
                     <h1 style="color: #8b0000;">Inicio / Home</h1>
                     <p style="margin-top: 15px; font-size: 1.1rem;">Bienvenido al panel principal de tu cuenta.</p>
                 </div>
 
-                <!-- PANTALLA: YO -->
                 <div id="view-yo" class="view-section">
                     <h1 style="color: #8b0000;">Perfil del Usuario</h1>
                     <p style="margin-top: 15px; font-size: 1.1rem;">Aquí verás tu progreso personal y medallas acumuladas.</p>
                 </div>
 
-                <!-- PANTALLA: AJUSTES -->
                 <div id="view-ajustes" class="view-section">
                     <h1 style="color: #8b0000;">Configuración</h1>
                     <p style="margin-top: 15px; font-size: 1.1rem;">Ajustes de la cuenta y preferencias de interfaz.</p>
@@ -647,6 +634,10 @@
             document.getElementById('login_email').value = '';
             document.getElementById('login_password').value = '';
             document.getElementById('login_password').type = 'password';
+            hideMessage();
+        }
+
+        function hideMessage() {
             const msg = document.getElementById('modal-msg');
             msg.style.display = 'none';
             msg.className = 'message';
@@ -681,7 +672,7 @@
             const password = document.getElementById('login_password').value;
 
             if (!email || !password) {
-                showMessage('Por favor completa todos los campos', 'error-message');
+                showMessage('Por favor completa todos los campos.', 'error-message');
                 return;
             }
 
@@ -696,15 +687,12 @@
                     enterApp(email);
                 }
             } else {
-                if (users[email]) {
-                    if (users[email] === password) {
-                        enterApp(email);
-                    } else {
-                        showMessage('Contraseña incorrecta.', 'error-message');
-                    }
+                // MODO INICIAR SESIÓN
+                if (!users[email]) {
+                    showMessage('El correo no se encuentra registrado.', 'error-message');
+                } else if (users[email] !== password) {
+                    showMessage('Contraseña incorrecta.', 'error-message');
                 } else {
-                    users[email] = password;
-                    localStorage.setItem('zoomi_users', JSON.stringify(users));
                     enterApp(email);
                 }
             }
@@ -715,7 +703,6 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
 
-            // Extraer el nombre de usuario de la parte previa al @
             let username = email.split('@')[0];
             document.getElementById('user-welcome-title').innerText = `Bienvenido ${username}`;
         }
@@ -732,22 +719,17 @@
             msg.style.display = 'block';
         }
 
-        // Cambio interactivo entre las pestañas del menú lateral
         function switchTab(element, viewId) {
-            // Quitar clase activa de todos los botones
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
 
-            // Activar el botón presionado
             element.classList.add('active');
 
-            // Ocultar todas las pantallas
             document.querySelectorAll('.view-section').forEach(view => {
                 view.classList.remove('active-view');
             });
 
-            // Mostrar la pantalla correspondiente
             const activeView = document.getElementById(viewId);
             if (activeView) {
                 activeView.classList.add('active-view');
