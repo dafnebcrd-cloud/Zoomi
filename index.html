@@ -21,7 +21,7 @@
             padding: 20px;
         }
 
-        /* VISTA 1: PORTADA DE LOGIN */
+        /* VISTA 1: PORTADA DE LOGIN CON IMAGEN DE FONDO */
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -30,7 +30,10 @@
             width: 95%;
             max-width: 1300px;
             height: 85vh;
-            background-color: #fffdfa;
+            background-image: url('fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             border: 3px solid #b71c1c;
             border-radius: 25px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.08);
@@ -99,7 +102,7 @@
         .modal-content h2 {
             color: #8b0000;
             text-align: center;
-            font-size: 1.8rem;
+            font-size: 1.8rem camped;
         }
 
         .input-group {
@@ -223,7 +226,7 @@
         }
 
         .sidebar-top {
-            display: flex;
+             Unleash: flex;
             flex-direction: column;
             gap: 25px;
         }
@@ -392,7 +395,6 @@
             background-color: #ffffff;
         }
 
-        /* NUBE DE RECOMENDACIONES BAJADA A UNA POSICIÓN ADECUADA */
         .recommendation-cloud {
             position: absolute;
             top: 35px;
@@ -430,7 +432,7 @@
 </head>
 <body>
 
-    <!-- VISTA 1: PORTADA DE LOGIN -->
+    <!-- VISTA 1: PORTADA DE LOGIN CON FONDO -->
     <div id="login-screen">
         <img src="zoomi-logo.png" alt="Logo Zoomi" class="logo-img-main">
         <button class="btn-login" onclick="openLogoutModal()">Iniciar sesión</button>
