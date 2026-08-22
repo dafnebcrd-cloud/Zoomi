@@ -40,7 +40,7 @@
             width: 95%;
             max-width: 1300px;
             height: 85vh;
-            background-color: rgba(251, 245, 232, 0.92); /* Color claro interior */
+            background-color: rgba(251, 245, 232, 0.92);
             border: 3px solid #b71c1c;
             border-radius: 25px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
@@ -281,12 +281,14 @@
             box-shadow: 2px 4px 10px rgba(242, 107, 82, 0.3);
         }
 
-        .nav-icon {
-            font-size: 1.4rem;
+        /* ESTILOS PARA LAS IMÁGENES DE ÍCONOS */
+        .nav-icon-img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 25px;
         }
 
         .sidebar-bottom {
@@ -488,19 +490,19 @@
                     
                     <nav class="nav-menu">
                         <div class="nav-item active" onclick="switchTab(this, 'view-lecciones')">
-                            <span class="nav-icon">📊</span>
+                            <img src="Lecciones!.png" alt="Lecciones" class="nav-icon-img">
                             <span>Lecciones</span>
                         </div>
                         <div class="nav-item" onclick="switchTab(this, 'view-home')">
-                            <span class="nav-icon">🏠</span>
+                            <img src="Casita!.png" alt="Home" class="nav-icon-img">
                             <span>Home</span>
                         </div>
                         <div class="nav-item" onclick="switchTab(this, 'view-yo')">
-                            <span class="nav-icon">👤</span>
+                            <img src="Yo!.png" alt="Yo" class="nav-icon-img">
                             <span>Yo</span>
                         </div>
                         <div class="nav-item" onclick="switchTab(this, 'view-ajustes')">
-                            <span class="nav-icon">⚙️</span>
+                            <img src="Ajustes!.png" alt="Ajustes" class="nav-icon-img">
                             <span>Ajustes</span>
                         </div>
                     </nav>
@@ -508,7 +510,7 @@
 
                 <div class="sidebar-bottom">
                     <div class="nav-item" onclick="logout()">
-                        <span class="nav-icon">🚪</span>
+                        <img src="salida!.png" alt="Cerrar sesión" class="nav-icon-img">
                         <span>Cerrar sesión</span>
                     </div>
                 </div>
@@ -712,7 +714,6 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
 
-            // REMOVE EL FONDO AL INGRESAR A LA PLATAFORMA
             document.body.classList.remove('login-bg');
 
             let username = email.split('@')[0];
@@ -723,7 +724,6 @@
             document.getElementById('main-app').style.display = 'none';
             document.getElementById('login-screen').style.display = 'flex';
 
-            // RESTAURA EL FONDO AL CERRAR SESIÓN
             document.body.classList.add('login-bg');
         }
 
