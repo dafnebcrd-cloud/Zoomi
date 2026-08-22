@@ -82,7 +82,7 @@
             border: 3px solid #8b0000;
             border-radius: 20px;
             padding: 40px;
-            width: 450px; /* Ventana más ancha */
+            width: 500px !important; /* Forzar ventana más ancha */
             max-width: 90%;
             display: flex;
             flex-direction: column;
@@ -94,7 +94,6 @@
             color: #8b0000;
             text-align: center;
             font-size: 1.8rem;
-            margin-bottom: 5px;
         }
 
         .input-group {
@@ -183,7 +182,6 @@
             color: #8b0000;
             cursor: pointer;
             text-decoration: underline;
-            margin-top: 5px;
         }
     </style>
 </head>
@@ -194,7 +192,6 @@
         <button class="btn-login" onclick="openLogoutModal()">Iniciar sesión</button>
     </div>
 
-    <!-- Modal para Login y Registro -->
     <div class="modal" id="modal-logout">
         <div class="modal-content">
             <h2 id="modal-title">Iniciar Sesión</h2>
@@ -228,17 +225,9 @@
     <script>
         let isRegisterMode = false;
 
-        // Cargar usuarios guardados o crear una base inicial si está vacía
         function getStoredUsers() {
             let users = localStorage.getItem('zoomi_users');
-            if (!users) {
-                const defaultUsers = {
-                    "admin@zoomi.com": "123456"
-                };
-                localStorage.setItem('zoomi_users', JSON.stringify(defaultUsers));
-                return defaultUsers;
-            }
-            return JSON.parse(users);
+            return users ? JSON.parse(users) : {};
         }
 
         function openLogoutModal() {
@@ -301,15 +290,24 @@
                 } else {
                     users[email] = password;
                     localStorage.setItem('zoomi_users', JSON.stringify(users));
-                    showMessage('¡Cuenta registrada con éxito! Ahora inicia sesión.', 'success-message');
-                    setTimeout(() => toggleMode(), 1200);
+                    showMessage('¡Cuenta registrada! Inicia sesión ahora.', 'success-message');
+                    setTimeout(() => toggleMode(), 1000);
                 }
             } else {
-                if (users[email] && users[email] === password) {
-                    alert('¡Inicio de sesión exitoso!');
-                    closeLogoutModal();
+                // Si la clave o el correo son correctos o si es la primera vez que entras con tu correo
+                if (users[email]) {
+                    if (users[email] === password) {
+                        alert('¡Inicio de sesión exitoso!');
+                        closeLogoutModal();
+                    } else {
+                        showMessage('Contraseña incorrecta.', 'error-message');
+                    }
                 } else {
-                    showMessage('Correo o contraseña incorrectos. Si no tienes cuenta, haz clic abajo para registrarte.', 'error-message');
+                    // Auto-registrar tu correo la primera vez si intentas ingresar directo
+                    users[email] = password;
+                    localStorage.setItem('zoomi_users', JSON.stringify(users));
+                    alert('¡Cuenta registrada e inicio de sesión exitoso!');
+                    closeLogoutModal();
                 }
             }
         }
