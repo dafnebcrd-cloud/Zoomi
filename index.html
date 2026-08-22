@@ -539,7 +539,7 @@
                             <div class="node-content">
                                 <div class="circle-button">★</div>
                                 <div class="node-info">
-                                    <div class="node-title">Introduccion al curso</div>
+                                    <div class="node-title">Introducción al curso</div>
                                     <div class="node-desc">Prueba inicial para saber en qué nivel estás.</div>
                                     <div class="progress-boxes">
                                         <div class="box"></div>
@@ -663,7 +663,7 @@
         const loginScreen = document.getElementById('login-screen');
         const mainApp = document.getElementById('main-app');
 
-        // Monitorear estado de autenticación
+        // Monitorear estado de autenticación de forma segura
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 closeModal();
@@ -680,8 +680,9 @@
             }
         });
 
-        // Eventos de interfaz
+        // Al hacer clic en "Iniciar sesión", forzar el modo de inicio de sesión por defecto
         document.getElementById('btn-open-login').onclick = () => {
+            setLoginMode();
             modal.classList.add('active');
             clearForm();
         };
@@ -697,22 +698,32 @@
         emailInput.oninput = hideMessage;
         passInput.oninput = hideMessage;
 
+        // Alternar entre Inicio de Sesión y Registro
         switchBtn.onclick = () => {
-            isRegisterMode = !isRegisterMode;
-            clearForm();
-
             if (isRegisterMode) {
-                modalTitle.innerText = 'Registrarse';
-                btnAction.innerText = 'Crear cuenta';
-                switchBtn.innerText = '¿Ya tienes cuenta? Inicia sesión';
+                setLoginMode();
             } else {
-                modalTitle.innerText = 'Iniciar Sesión';
-                btnAction.innerText = 'Ingresar';
-                switchBtn.innerText = '¿No tienes cuenta? Regístrate aquí';
+                setRegisterMode();
             }
         };
 
-        // Validación estricta con Firebase
+        function setLoginMode() {
+            isRegisterMode = false;
+            modalTitle.innerText = 'Iniciar Sesión';
+            btnAction.innerText = 'Ingresar';
+            switchBtn.innerText = '¿No tienes cuenta? Regístrate aquí';
+            clearForm();
+        }
+
+        function setRegisterMode() {
+            isRegisterMode = true;
+            modalTitle.innerText = 'Registrarse';
+            btnAction.innerText = 'Crear cuenta';
+            switchBtn.innerText = '¿Ya tienes cuenta? Inicia sesión';
+            clearForm();
+        }
+
+        // Validación y llamadas estrictas a Firebase
         btnAction.onclick = async () => {
             const email = emailInput.value.trim();
             const password = passInput.value;
@@ -736,7 +747,7 @@
                 if (error.code === 'auth/invalid-email') text = 'El correo electrónico no es válido.';
                 if (error.code === 'auth/user-not-found') text = 'El correo no se encuentra registrado.';
                 if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') text = 'Contraseña o usuario incorrectos.';
-                if (error.code === 'auth/email-already-in-use') text = 'Este correo ya está registrado.';
+                if (error.code === 'auth/email-already-in-use') text = 'Este correo ya está registrado. Haz clic abajo para Iniciar Sesión.';
                 if (error.code === 'auth/weak-password') text = 'La contraseña debe tener al menos 6 caracteres.';
                 
                 showMessage(text, 'error-message');
@@ -746,8 +757,13 @@
             }
         };
 
-        document.getElementById('btn-logout').onclick = () => {
-            signOut(auth);
+        // Cerrar sesión limpiando el estado de autenticación
+        document.getElementById('btn-logout').onclick = async () => {
+            try {
+                await signOut(auth);
+            } catch (e) {
+                console.error("Error al cerrar sesión", e);
+            }
         };
 
         // Cambiar entre pestañas
