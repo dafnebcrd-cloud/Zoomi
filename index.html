@@ -34,6 +34,7 @@
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             gap: 25px;
+            position: relative;
         }
 
         .logo-img-main {
@@ -58,6 +59,97 @@
             background-color: #8b0000;
             color: #ffffff;
         }
+
+        /* Modal de Iniciar Sesión */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #fffdfa;
+            border: 2px solid #8b0000;
+            border-radius: 15px;
+            padding: 30px;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            color: #8b0000;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #8b0000;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 0.85rem;
+            display: none;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .btn-submit {
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-cancel {
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -66,6 +158,65 @@
         <img src="zoomi-logo.png" alt="Logo Zoomi" class="logo-img-main">
         <button class="btn-login" onclick="openLogoutModal()">Iniciar sesión</button>
     </div>
+
+    <!-- Ventana Modal de Login -->
+    <div class="modal" id="modal-logout">
+        <div class="modal-content">
+            <h2>Iniciar Sesión</h2>
+            
+            <div class="input-group">
+                <label for="login_email">Correo electrónico:</label>
+                <input type="email" id="login_email" placeholder="usuario@zoomi.com">
+            </div>
+
+            <div class="input-group">
+                <label for="login_password">Contraseña:</label>
+                <input type="password" id="login_password" placeholder="••••••••">
+            </div>
+
+            <div id="login-error" class="error-message">Correo o contraseña incorrectos.</div>
+
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="btn-submit" onclick="confirmLogin()">Ingresar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Credenciales válidas registradas de prueba
+        const USERS_DB = {
+            "usuario@zoomi.com": "123456",
+            "admin@zoomi.com": "zoomi2026"
+        };
+
+        function openLogoutModal() {
+            document.getElementById('modal-logout').classList.add('active');
+            document.getElementById('login-error').style.display = 'none';
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('modal-logout').classList.remove('active');
+            document.getElementById('login_email').value = '';
+            document.getElementById('login_password').value = '';
+            document.getElementById('login-error').style.display = 'none';
+        }
+
+        function confirmLogin() {
+            const emailInput = document.getElementById('login_email').value.trim();
+            const passwordInput = document.getElementById('login_password').value;
+            const errorElement = document.getElementById('login-error');
+
+            // Verificar si el correo existe en la base de datos y la contraseña coincide
+            if (USERS_DB[emailInput] && USERS_DB[emailInput] === passwordInput) {
+                alert('¡Inicio de sesión exitoso!');
+                closeLogoutModal();
+            } else {
+                errorElement.innerText = "Correo o contraseña incorrectos.";
+                errorElement.style.display = 'block';
+            }
+        }
+    </script>
 
 </body>
 </html>
