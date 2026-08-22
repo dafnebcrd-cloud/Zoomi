@@ -4,34 +4,111 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zoomi</title>
-  <!-- Volvemos a conectar tu archivo de estilos original -->
-  <link rel="stylesheet" href="style.css">
   <style>
-    /* Estilo ligero para la caja de mensajes de error/éxito */
+    /* Estilos básicos para el Modal y las Alertas */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 50%;
+    }
+
+    .btn-primary {
+      background-color: #800000;
+      color: white;
+    }
+
+    .btn-secondary {
+      background-color: #ccc;
+      color: #333;
+    }
+
     .alert-message {
       display: none;
       padding: 10px;
-      border-radius: 6px;
+      border-radius: 5px;
       margin-bottom: 15px;
-      font-size: 13px;
+      font-size: 14px;
       text-align: center;
-      font-weight: bold;
+    }
+
+    .toggle-mode-container {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .toggle-mode-container a {
+      color: #800000;
+      text-decoration: underline;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA DE FONDO / APP PRINCIPAL -->
-  <div id="mainApp">
-    <!-- Aquí se conserva tu interfaz visual de lecciones, fondo y logos -->
-  </div>
-
-  <!-- MODAL DE AUTENTICACIÓN -->
+  <!-- MODAL DE INICIAR SESIÓN / REGISTRO -->
   <div id="authModal" class="modal-overlay">
     <div class="modal-content">
       <h2 id="modalTitle">Iniciar Sesión</h2>
       
-      <!-- Mensaje de alerta para errores o confirmación -->
+      <!-- Cuadro de alertas -->
       <div id="authAlert" class="alert-message"></div>
 
       <form id="authForm">
@@ -57,18 +134,73 @@
     </div>
   </div>
 
-  <!-- CÓDIGO DE SEGURIDAD Y FIREBASE -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getAuth, 
-      createUserWithEmailAndPassword, 
-      signInWithEmailAndPassword, 
-      sendEmailVerification, 
-      signOut, 
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  <!-- PANTALLA PRINCIPAL DE ZOOMI (OCULTA HASTA INICIAR SESIÓN) -->
+  <div id="mainApp" style="display: none; padding: 20px;">
+    <header>
+      <h1 id="welcomeUserMessage">Bienvenido a Zoomi</h1>
+      <button id="logoutBtn" class="btn-primary" style="width: auto;">Cerrar sesión</button>
+    </header>
+  </div>
 
+  <!-- SCRIPT CON LA LÓGICA DE FIREBASE Y VALIDACIONES -->
+  <script type="module">
+  // VALIDAR CONTRASEÑA SEGURA (Mínimo 8 caracteres, 1 mayúscula y 1 número)
+function isPasswordStrong(password) {
+  return /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
+}
+
+// PROCESAR EL FORMULARIO
+authForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = authEmail.value.trim();
+  const password = authPassword.value;
+
+  if (isRegisterMode) {
+    // --- FILTRO EN REGISTRO ---
+    if (!isPasswordStrong(password)) {
+      alert("La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula y un número.");
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Enviar correo de verificación
+      await sendEmailVerification(userCredential.user);
+      await signOut(auth);
+
+      alert("¡Cuenta creada con éxito! Te hemos enviado un correo de confirmación. Por favor verifícalo en tu bandeja antes de ingresar.");
+      setAuthMode(false); // Regresa a modo Iniciar Sesión
+
+    } catch (error) {
+      if (error.code === 'auth/email-already-in-use') {
+        alert("Este correo ya está registrado. Por favor inicia sesión.");
+      } else {
+        alert("Error al registrarse: " + error.message);
+      }
+    }
+
+  } else {
+    // --- FILTRO EN INICIO DE SESIÓN ---
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Si el correo no ha sido verificado, se le bloquea el acceso
+      if (!userCredential.user.emailVerified) {
+        alert("Tu correo electrónico aún no ha sido verificado. Revisa tu bandeja de entrada o spam.");
+        await signOut(auth);
+        return;
+      }
+
+      // Si la contraseña es correcta y el correo está verificado, entra a Zoomi
+      authModal.style.display = "none";
+
+    } catch (error) {
+      alert("Correo o contraseña incorrectos.");
+    }
+  }
+});
+    // Reemplaza estas credenciales si cambian en tu consola de Firebase
     const firebaseConfig = {
       apiKey: "TU_API_KEY_AQUÍ",
       authDomain: "zoomi-aa021.firebaseapp.com",
@@ -82,6 +214,7 @@
     const auth = getAuth(app);
 
     const authModal = document.getElementById("authModal");
+    const mainApp = document.getElementById("mainApp");
     const modalTitle = document.getElementById("modalTitle");
     const authForm = document.getElementById("authForm");
     const authEmail = document.getElementById("authEmail");
@@ -89,6 +222,8 @@
     const submitAuthBtn = document.getElementById("submitAuthBtn");
     const toggleText = document.getElementById("toggleText");
     const authAlert = document.getElementById("authAlert");
+    const welcomeUserMessage = document.getElementById("welcomeUserMessage");
+    const logoutBtn = document.getElementById("logoutBtn");
     const cancelBtn = document.getElementById("cancelBtn");
 
     let isRegisterMode = false;
@@ -129,6 +264,7 @@
 
     setAuthMode(false);
 
+    // Requisito de seguridad: mínimo 8 caracteres, al menos 1 mayúscula y 1 número
     function isPasswordStrong(password) {
       const regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
       return regex.test(password);
@@ -142,6 +278,7 @@
       const password = authPassword.value;
 
       if (isRegisterMode) {
+        // --- FILTRO DE SEGURIDAD EN REGISTRO ---
         if (!isPasswordStrong(password)) {
           showAlert("La contraseña debe tener al menos 8 caracteres, incluir una mayúscula y un número.");
           return;
@@ -151,10 +288,11 @@
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
 
+          // Enviar correo de verificación para asegurar que el correo es real
           await sendEmailVerification(user);
           await signOut(auth);
 
-          showAlert("¡Cuenta creada! Se envió un correo de confirmación. Por favor verifícalo antes de ingresar.", false);
+          showAlert("¡Cuenta creada! Se ha enviado un correo de confirmación. Por favor verifícalo antes de iniciar sesión.", false);
           
           setTimeout(() => {
             setAuthMode(false);
@@ -162,24 +300,27 @@
 
         } catch (error) {
           if (error.code === 'auth/email-already-in-use') {
-            showAlert("Este correo ya está registrado. Cambia a 'Iniciar sesión'.");
+            showAlert("Este correo electrónico ya está registrado. Cambia a 'Iniciar sesión'.");
           } else {
             showAlert("Error al registrarse: " + error.message);
           }
         }
 
       } else {
+        // --- FILTRO DE SEGURIDAD EN INICIO DE SESIÓN ---
         try {
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
 
+          // Si el correo no está verificado, no permite ingresar
           if (!user.emailVerified) {
-            showAlert("Tu correo aún no ha sido verificado. Revisa tu bandeja de entrada.");
+            showAlert("Tu correo aún no ha sido verificado. Revisa tu bandeja de entrada o spam.");
             await signOut(auth);
             return;
           }
 
           authModal.style.display = "none";
+          mainApp.style.display = "block";
 
         } catch (error) {
           showAlert("Correo o contraseña incorrectos.");
@@ -189,10 +330,18 @@
 
     onAuthStateChanged(auth, (user) => {
       if (user && user.emailVerified) {
+        welcomeUserMessage.textContent = `Bienvenido ${user.email.split('@')[0]}`;
         authModal.style.display = "none";
+        mainApp.style.display = "block";
       } else {
+        mainApp.style.display = "none";
         authModal.style.display = "flex";
       }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      setAuthMode(false);
     });
 
     cancelBtn.addEventListener("click", () => {
