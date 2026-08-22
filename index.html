@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* FONDO GENERAL POR DEFECTO (CUANDO SE INICIA SESIÓN) */
+        /* FONDO GENERAL POR DEFECTO */
         body {
             background-color: #f5f5dc;
             display: flex;
@@ -47,7 +47,6 @@
             gap: 35px;
         }
 
-        /* LOGO CON TAMAÑO EQUILIBRADO */
         .logo-img-main {
             width: 450px;
             max-width: 85%;
@@ -55,7 +54,6 @@
             object-fit: contain;
         }
 
-        /* BOTÓN CON TAMAÑO AJUSTADO */
         .btn-login {
             background-color: #fffdfa;
             color: #8b0000;
@@ -201,7 +199,7 @@
             text-decoration: underline;
         }
 
-        /* VISTA 2: INTERIOR DE LA PÁGINA */
+        /* VISTA 2: PANEL PRINCIPAL */
         #main-app {
             display: none;
             width: 100%;
@@ -281,7 +279,6 @@
             box-shadow: 2px 4px 10px rgba(242, 107, 82, 0.3);
         }
 
-        /* ESTILOS PARA LAS IMÁGENES DE ÍCONOS */
         .nav-icon-img {
             width: 28px;
             height: 28px;
@@ -315,7 +312,6 @@
             margin-bottom: 30px;
         }
 
-        /* MAPA Y RUTA DE APRENDIZAJE */
         .path-container {
             position: relative;
             max-width: 850px;
@@ -444,7 +440,7 @@
     <!-- VISTA 1: PORTADA DE LOGIN -->
     <div id="login-screen">
         <img src="zoomi-logo.png" alt="Logo Zoomi" class="logo-img-main">
-        <button class="btn-login" onclick="openLogoutModal()">Iniciar sesión</button>
+        <button class="btn-login" id="btn-open-login">Iniciar sesión</button>
     </div>
 
     <!-- MODAL DE AUTENTICACIÓN -->
@@ -454,25 +450,25 @@
             
             <div class="input-group">
                 <label for="login_email">Correo electrónico:</label>
-                <input type="email" id="login_email" placeholder="usuario@zoomi.com" oninput="hideMessage()">
+                <input type="email" id="login_email" placeholder="usuario@zoomi.com">
             </div>
 
             <div class="input-group">
                 <label for="login_password">Contraseña:</label>
                 <div class="password-wrapper">
-                    <input type="password" id="login_password" placeholder="••••••••" oninput="hideMessage()">
-                    <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+                    <input type="password" id="login_password" placeholder="••••••••">
+                    <span class="toggle-password" id="toggle-pass-btn">👁️</span>
                 </div>
             </div>
 
             <div id="modal-msg" class="message"></div>
 
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeLogoutModal()">Cancelar</button>
-                <button class="btn-submit" id="btn-action" onclick="handleAuth()">Ingresar</button>
+                <button class="btn-cancel" id="btn-cancel">Cancelar</button>
+                <button class="btn-submit" id="btn-action">Ingresar</button>
             </div>
 
-            <div class="switch-mode" id="switch-btn" onclick="toggleMode()">
+            <div class="switch-mode" id="switch-btn">
                 ¿No tienes cuenta? Regístrate aquí
             </div>
         </div>
@@ -489,19 +485,19 @@
                     </div>
                     
                     <nav class="nav-menu">
-                        <div class="nav-item active" onclick="switchTab(this, 'view-lecciones')">
+                        <div class="nav-item active" id="tab-lecciones">
                             <img src="Lecciones!.png" alt="Lecciones" class="nav-icon-img">
                             <span>Lecciones</span>
                         </div>
-                        <div class="nav-item" onclick="switchTab(this, 'view-home')">
+                        <div class="nav-item" id="tab-home">
                             <img src="Casita!.png" alt="Home" class="nav-icon-img">
                             <span>Home</span>
                         </div>
-                        <div class="nav-item" onclick="switchTab(this, 'view-yo')">
+                        <div class="nav-item" id="tab-yo">
                             <img src="Yo!.png" alt="Yo" class="nav-icon-img">
                             <span>Yo</span>
                         </div>
-                        <div class="nav-item" onclick="switchTab(this, 'view-ajustes')">
+                        <div class="nav-item" id="tab-ajustes">
                             <img src="Ajustes!.png" alt="Ajustes" class="nav-icon-img">
                             <span>Ajustes</span>
                         </div>
@@ -509,7 +505,7 @@
                 </div>
 
                 <div class="sidebar-bottom">
-                    <div class="nav-item" onclick="logout()">
+                    <div class="nav-item" id="btn-logout">
                         <img src="salida!.png" alt="Cerrar sesión" class="nav-icon-img">
                         <span>Cerrar sesión</span>
                     </div>
@@ -624,131 +620,159 @@
         </div>
     </div>
 
-    <script>
+    <!-- FIREBASE Y LÓGICA DE APLICACIÓN -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Configuración de Firebase con tus credenciales reales
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3xMWqbZprDWeZ5Fq3xZnPQ7EPREREtSs",
+            authDomain: "zoomi-aa021.firebaseapp.com",
+            projectId: "zoomi-aa021",
+            storageBucket: "zoomi-aa021.firebasestorage.app",
+            messagingSenderId: "625440327174",
+            appId: "1:625440327174:web:359edb90f4fe7139bbe587"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
         let isRegisterMode = false;
 
-        function getStoredUsers() {
-            let users = localStorage.getItem('zoomi_users');
-            return users ? JSON.parse(users) : {};
-        }
+        // Elementos DOM
+        const modal = document.getElementById('modal-logout');
+        const modalTitle = document.getElementById('modal-title');
+        const btnAction = document.getElementById('btn-action');
+        const switchBtn = document.getElementById('switch-btn');
+        const emailInput = document.getElementById('login_email');
+        const passInput = document.getElementById('login_password');
+        const msgDiv = document.getElementById('modal-msg');
+        const loginScreen = document.getElementById('login-screen');
+        const mainApp = document.getElementById('main-app');
 
-        function openLogoutModal() {
-            document.getElementById('modal-logout').classList.add('active');
+        // Escuchar cambios de estado de autenticación
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                closeModal();
+                loginScreen.style.display = 'none';
+                mainApp.style.display = 'block';
+                document.body.classList.remove('login-bg');
+                
+                let username = user.email.split('@')[0];
+                document.getElementById('user-welcome-title').innerText = `Bienvenido ${username}`;
+            } else {
+                mainApp.style.display = 'none';
+                loginScreen.style.display = 'flex';
+                document.body.classList.add('login-bg');
+            }
+        });
+
+        // Eventos
+        document.getElementById('btn-open-login').onclick = () => {
+            modal.classList.add('active');
             clearForm();
-        }
+        };
 
-        function closeLogoutModal() {
-            document.getElementById('modal-logout').classList.remove('active');
-            clearForm();
-        }
+        document.getElementById('btn-cancel').onclick = () => {
+            closeModal();
+        };
 
-        function clearForm() {
-            document.getElementById('login_email').value = '';
-            document.getElementById('login_password').value = '';
-            document.getElementById('login_password').type = 'password';
-            hideMessage();
-        }
-
-        function hideMessage() {
-            const msg = document.getElementById('modal-msg');
-            msg.style.display = 'none';
-            msg.className = 'message';
-        }
-
-        function togglePasswordVisibility() {
-            const passInput = document.getElementById('login_password');
+        document.getElementById('toggle-pass-btn').onclick = () => {
             passInput.type = (passInput.type === 'password') ? 'text' : 'password';
-        }
+        };
 
-        function toggleMode() {
+        emailInput.oninput = hideMessage;
+        passInput.oninput = hideMessage;
+
+        switchBtn.onclick = () => {
             isRegisterMode = !isRegisterMode;
             clearForm();
 
-            const title = document.getElementById('modal-title');
-            const btnAction = document.getElementById('btn-action');
-            const switchBtn = document.getElementById('switch-btn');
-
             if (isRegisterMode) {
-                title.innerText = 'Registrarse';
+                modalTitle.innerText = 'Registrarse';
                 btnAction.innerText = 'Crear cuenta';
                 switchBtn.innerText = '¿Ya tienes cuenta? Inicia sesión';
             } else {
-                title.innerText = 'Iniciar Sesión';
+                modalTitle.innerText = 'Iniciar Sesión';
                 btnAction.innerText = 'Ingresar';
                 switchBtn.innerText = '¿No tienes cuenta? Regístrate aquí';
             }
-        }
+        };
 
-        function handleAuth() {
-            const email = document.getElementById('login_email').value.trim();
-            const password = document.getElementById('login_password').value;
+        btnAction.onclick = async () => {
+            const email = emailInput.value.trim();
+            const password = passInput.value;
 
             if (!email || !password) {
                 showMessage('Por favor completa todos los campos.', 'error-message');
                 return;
             }
 
-            const users = getStoredUsers();
-
-            if (isRegisterMode) {
-                if (users[email]) {
-                    showMessage('Este correo ya está registrado.', 'error-message');
+            try {
+                if (isRegisterMode) {
+                    await createUserWithEmailAndPassword(auth, email, password);
                 } else {
-                    users[email] = password;
-                    localStorage.setItem('zoomi_users', JSON.stringify(users));
-                    enterApp(email);
+                    await signInWithEmailAndPassword(auth, email, password);
                 }
-            } else {
-                if (!users[email]) {
-                    showMessage('El correo no se encuentra registrado.', 'error-message');
-                } else if (users[email] !== password) {
-                    showMessage('Contraseña incorrecta.', 'error-message');
-                } else {
-                    enterApp(email);
-                }
+            } catch (error) {
+                let text = 'Ocurrió un error al procesar la solicitud.';
+                if (error.code === 'auth/invalid-email') text = 'El correo electrónico no es válido.';
+                if (error.code === 'auth/user-not-found') text = 'El correo no se encuentra registrado.';
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') text = 'Contraseña o usuario incorrectos.';
+                if (error.code === 'auth/email-already-in-use') text = 'Este correo ya está registrado.';
+                if (error.code === 'auth/weak-password') text = 'La contraseña debe tener al menos 6 caracteres.';
+                
+                showMessage(text, 'error-message');
             }
+        };
+
+        document.getElementById('btn-logout').onclick = () => {
+            signOut(auth);
+        };
+
+        // Navegación de pestañas
+        document.getElementById('tab-lecciones').onclick = function() { switchTab(this, 'view-lecciones'); };
+        document.getElementById('tab-home').onclick = function() { switchTab(this, 'view-home'); };
+        document.getElementById('tab-yo').onclick = function() { switchTab(this, 'view-yo'); };
+        document.getElementById('tab-ajustes').onclick = function() { switchTab(this, 'view-ajustes'); };
+
+        function switchTab(element, viewId) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            document.querySelectorAll('.view-section').forEach(view => view.classList.remove('active-view'));
+            const activeView = document.getElementById(viewId);
+            if (activeView) activeView.classList.add('active-view');
         }
 
-        function enterApp(email) {
-            closeLogoutModal();
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-
-            document.body.classList.remove('login-bg');
-
-            let username = email.split('@')[0];
-            document.getElementById('user-welcome-title').innerText = `Bienvenido ${username}`;
+        function closeModal() {
+            modal.classList.remove('active');
+            clearForm();
         }
 
-        function logout() {
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
+        function clearForm() {
+            emailInput.value = '';
+            passInput.value = '';
+            passInput.type = 'password';
+            hideMessage();
+        }
 
-            document.body.classList.add('login-bg');
+        function hideMessage() {
+            msgDiv.style.display = 'none';
+            msgDiv.className = 'message';
         }
 
         function showMessage(text, typeClass) {
-            const msg = document.getElementById('modal-msg');
-            msg.innerText = text;
-            msg.className = `message ${typeClass}`;
-            msg.style.display = 'block';
-        }
-
-        function switchTab(element, viewId) {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-
-            element.classList.add('active');
-
-            document.querySelectorAll('.view-section').forEach(view => {
-                view.classList.remove('active-view');
-            });
-
-            const activeView = document.getElementById(viewId);
-            if (activeView) {
-                activeView.classList.add('active-view');
-            }
+            msgDiv.innerText = text;
+            msgDiv.className = `message ${typeClass}`;
+            msgDiv.style.display = 'block';
         }
     </script>
 
