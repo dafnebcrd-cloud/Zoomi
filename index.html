@@ -34,35 +34,35 @@
             border: 3px solid #b71c1c;
             border-radius: 25px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            gap: 40px;
+            gap: 50px; /* Un poco más de espacio entre logo y botón */
         }
 
-        /* LOGO MÁS GRANDE */
+        /* LOGO FORZADO A SER MUCHO MÁS GRANDE */
         .logo-img-main {
-            max-width: 520px;
-            width: 80%;
+            width: 650px; /* Tamaño exacto forzado */
+            max-width: 90%; /* Para que no se corte en pantallas pequeñas */
             height: auto;
             object-fit: contain;
         }
 
-        /* BOTÓN MÁS GRANDE */
+        /* BOTÓN AÚN MÁS GRANDE */
         .btn-login {
             background-color: #fffdfa;
             color: #8b0000;
-            border: 3px solid #8b0000;
-            padding: 18px 65px;
-            font-size: 1.5rem;
+            border: 4px solid #8b0000; /* Borde un poco más grueso */
+            padding: 20px 80px; /* Mucho más espacio interno */
+            font-size: 1.8rem; /* Letra más grande */
             font-weight: bold;
-            border-radius: 40px;
+            border-radius: 50px; /* Bordes bien redondeados */
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.15);
+            box-shadow: 0 6px 15px rgba(139, 0, 0, 0.2);
         }
 
         .btn-login:hover {
             background-color: #8b0000;
             color: #ffffff;
-            transform: scale(1.03);
+            transform: scale(1.05); /* Efecto de crecimiento al pasar el mouse */
         }
 
         /* MODAL FLOTANTE DE AUTENTICACIÓN */
