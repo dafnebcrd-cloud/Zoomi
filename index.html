@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -18,10 +18,10 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 30px;
+            padding: 20px;
         }
 
-        /* VISTA 1: PORTADA DE LOGIN AGRANDADA */
+        /* VISTA 1: PORTADA DE LOGIN */
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -29,7 +29,7 @@
             align-items: center;
             width: 95%;
             max-width: 1300px;
-            height: 82vh;
+            height: 85vh;
             background-color: #fffdfa;
             border: 3px solid #b71c1c;
             border-radius: 25px;
@@ -60,7 +60,7 @@
             color: #ffffff;
         }
 
-        /* MODAL FLOTANTE */
+        /* MODAL FLOTANTE DE AUTENTICACIÓN */
         .modal {
             display: none;
             position: fixed;
@@ -83,7 +83,7 @@
             border: 3px solid #8b0000;
             border-radius: 20px;
             padding: 40px;
-            width: 520px;
+            width: 500px;
             max-width: 90%;
             display: flex;
             flex-direction: column;
@@ -185,70 +185,253 @@
             text-decoration: underline;
         }
 
-        /* VISTA 2: INTERIOR DE LA PÁGINA (CUERPO PRINCIPAL) */
+        /* VISTA 2: INTERIOR DE LA PÁGINA (DASHBOARD COMPLETO) */
         #main-app {
             display: none;
-            width: 95%;
+            width: 100%;
             max-width: 1300px;
-            min-height: 82vh;
-            background-color: #fffdfa;
-            border: 3px solid #b71c1c;
-            border-radius: 25px;
-            padding: 40px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            height: 90vh;
+            background-color: #fbf5e8;
+            border: 3px solid #8b0000;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
         }
 
-        .app-header {
+        .dashboard-layout {
             display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* MENÚ LATERAL */
+        .sidebar {
+            width: 260px;
+            background-color: #ffffff;
+            border-right: 2px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #8b0000;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            padding: 25px 0;
+            flex-shrink: 0;
         }
 
-        .app-header img {
-            height: 60px;
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
         }
 
-        .user-info {
+        .sidebar-logo {
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .sidebar-logo img {
+            max-width: 180px;
+            height: auto;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 15px;
+        }
+
+        .nav-item {
             display: flex;
             align-items: center;
             gap: 15px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #9e9e9e;
+            cursor: pointer;
+            border-top-right-radius: 25px;
+            border-bottom-right-radius: 25px;
+            transition: all 0.2s ease-in-out;
+            user-select: none;
         }
 
-        .btn-logout {
-            background-color: #8b0000;
+        .nav-item:hover {
+            color: #f26b52;
+            background-color: #fff3f0;
+        }
+
+        /* Estado del botón activo (animación anaranjada) */
+        .nav-item.active {
+            background-color: #f26b52;
+            color: #ffffff;
+            box-shadow: 2px 4px 10px rgba(242, 107, 82, 0.3);
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 25px;
+        }
+
+        .sidebar-bottom {
+            padding-right: 15px;
+        }
+
+        /* ÁREA DE CONTENIDO (CURSO Y MAPA) */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 50px;
+            position: relative;
+        }
+
+        .welcome-banner {
+            display: inline-block;
+            background: linear-gradient(180deg, #b71c1c 0%, #8b0000 100%);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 30px;
+            border-radius: 15px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        /* MAPA Y RUTA DE APRENDIZAJE */
+        .path-container {
+            position: relative;
+            max-width: 850px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+        }
+
+        /* Dibujo del camino */
+        .path-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .path-node {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            margin-bottom: 90px;
+        }
+
+        .node-left { justify-content: flex-start; }
+        .node-right { justify-content: flex-end; }
+
+        .node-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: rgba(251, 245, 232, 0.85);
+            padding: 10px;
+            border-radius: 15px;
+        }
+
+        .circle-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #b71c1c, #8b0000);
+            border: 4px solid #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
             cursor: pointer;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .circle-button:hover {
+            transform: scale(1.08);
+        }
+
+        .node-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .node-title {
+            font-size: 1.5rem;
+            color: #8b0000;
             font-weight: bold;
         }
 
-        .app-content {
-            padding: 20px 0;
+        .node-desc {
+            font-size: 0.95rem;
+            color: #333;
         }
 
-        .welcome-card {
-            background-color: #fbf3e7;
-            border: 1px solid #d7ccc8;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
+        .progress-boxes {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
         }
 
-        .welcome-card h1 {
-            color: #8b0000;
-            margin-bottom: 10px;
-            font-size: 2rem;
+        .box {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #8b0000;
+            background-color: #ffffff;
+        }
+
+        .box.filled {
+            background-color: #8b0000;
+        }
+
+        /* Nube de recomendaciones */
+        .recommendation-cloud {
+            position: absolute;
+            top: -10px;
+            right: 40px;
+            background-color: #fbc02d;
+            color: #5d4037;
+            font-weight: bold;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 3;
+            font-size: 1.1rem;
+        }
+
+        .recommendation-cloud::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #fbc02d transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Secciones secundarias vacías para demostración */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active-view {
+            display: block;
         }
     </style>
 </head>
 <body>
 
-    <!-- VISTA 1: INICIO DE SESIÓN -->
+    <!-- VISTA 1: PORTADA DE LOGIN -->
     <div id="login-screen">
         <img src="zoomi-logo.png" alt="Logo Zoomi" class="logo-img-main">
         <button class="btn-login" onclick="openLogoutModal()">Iniciar sesión</button>
@@ -285,22 +468,161 @@
         </div>
     </div>
 
-    <!-- VISTA 2: INTERIOR DE LA PÁGINA (DASHBOARD) -->
+    <!-- VISTA 2: PANEL PRINCIPAL (DASHBOARD) -->
     <div id="main-app">
-        <header class="app-header">
-            <img src="zoomi-logo.png" alt="Logo Zoomi">
-            <div class="user-info">
-                <span id="user-display-email" style="font-weight: bold; color: #333;"></span>
-                <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
-            </div>
-        </header>
+        <div class="dashboard-layout">
+            
+            <!-- BARRA LATERAL CON BOTONES -->
+            <aside class="sidebar">
+                <div class="sidebar-top">
+                    <div class="sidebar-logo">
+                        <img src="zoomi-logo.png" alt="Zoomi Logo">
+                    </div>
+                    
+                    <nav class="nav-menu">
+                        <div class="nav-item active" onclick="switchTab(this, 'view-lecciones')">
+                            <span class="nav-icon">📊</span>
+                            <span>Lecciones</span>
+                        </div>
+                        <div class="nav-item" onclick="switchTab(this, 'view-home')">
+                            <span class="nav-icon">🏠</span>
+                            <span>Home</span>
+                        </div>
+                        <div class="nav-item" onclick="switchTab(this, 'view-yo')">
+                            <span class="nav-icon">👤</span>
+                            <span>Yo</span>
+                        </div>
+                        <div class="nav-item" onclick="switchTab(this, 'view-ajustes')">
+                            <span class="nav-icon">⚙️</span>
+                            <span>Ajustes</span>
+                        </div>
+                    </nav>
+                </div>
 
-        <main class="app-content">
-            <div class="welcome-card">
-                <h1>¡Bienvenido a Zoomi!</h1>
-                <p>Has ingresado correctamente al panel principal.</p>
-            </div>
-        </main>
+                <div class="sidebar-bottom">
+                    <div class="nav-item" onclick="logout()">
+                        <span class="nav-icon">🚪</span>
+                        <span>Cerrar sesión</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CONTENIDO PRINCIPAL -->
+            <main class="content-area">
+                
+                <!-- PANTALLA: LECCIONES -->
+                <div id="view-lecciones" class="view-section active-view">
+                    
+                    <div class="welcome-banner" id="user-welcome-title">
+                        Bienvenido Usuario
+                    </div>
+
+                    <div class="recommendation-cloud">
+                        recomendaciones
+                    </div>
+
+                    <div class="path-container">
+                        <!-- SVG para dibujar el camino sinuoso -->
+                        <svg class="path-svg" viewBox="0 0 800 900" preserveAspectRatio="none">
+                            <path d="M 180 60 C 220 220, 600 180, 580 320 C 560 480, 180 420, 200 600 C 220 750, 620 720, 600 880" 
+                                  fill="none" stroke="#8b0000" stroke-width="45" stroke-linecap="round" />
+                        </svg>
+
+                        <!-- NODO 1: INTRODUCCIÓN -->
+                        <div class="path-node node-left" style="margin-top: 20px;">
+                            <div class="node-content">
+                                <div class="circle-button">★</div>
+                                <div class="node-info">
+                                    <div class="node-title">Introduccion al curso</div>
+                                    <div class="node-desc">Prueba inicial para saber en qué nivel estás.</div>
+                                    <div class="progress-boxes">
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NODO 2: OPERACIONES BÁSICAS -->
+                        <div class="path-node node-right" style="margin-top: 50px;">
+                            <div class="node-content">
+                                <div class="node-info" style="text-align: right;">
+                                    <div class="node-title">Operaciones básicas</div>
+                                    <div class="node-desc">Sumar, restar, multiplicación y división</div>
+                                    <div class="progress-boxes" style="justify-content: flex-end;">
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                    </div>
+                                </div>
+                                <div class="circle-button">🔒</div>
+                            </div>
+                        </div>
+
+                        <!-- NODO 3: JERARQUÍA DE OPERACIONES -->
+                        <div class="path-node node-left" style="margin-top: 60px;">
+                            <div class="node-content">
+                                <div class="circle-button">🔒</div>
+                                <div class="node-info">
+                                    <div class="node-title">Jerarquía de operaciones</div>
+                                    <div class="node-desc">Primero paréntesis, luego potencias, después multiplicación/división y al final suma/resta.</div>
+                                    <div class="progress-boxes">
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NODO 4: FRACCIONES -->
+                        <div class="path-node node-right" style="margin-top: 60px;">
+                            <div class="node-content">
+                                <div class="node-info" style="text-align: right;">
+                                    <div class="node-title">Fracciones</div>
+                                    <div class="node-desc">Partes de un entero: sumar, restar, multiplicar y dividir con denominadores distintos.</div>
+                                    <div class="progress-boxes" style="justify-content: flex-end;">
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                        <div class="box"></div>
+                                    </div>
+                                </div>
+                                <div class="circle-button">🔒</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANTALLA: HOME -->
+                <div id="view-home" class="view-section">
+                    <h1 style="color: #8b0000;">Inicio / Home</h1>
+                    <p style="margin-top: 15px; font-size: 1.1rem;">Bienvenido al panel principal de tu cuenta.</p>
+                </div>
+
+                <!-- PANTALLA: YO -->
+                <div id="view-yo" class="view-section">
+                    <h1 style="color: #8b0000;">Perfil del Usuario</h1>
+                    <p style="margin-top: 15px; font-size: 1.1rem;">Aquí verás tu progreso personal y medallas acumuladas.</p>
+                </div>
+
+                <!-- PANTALLA: AJUSTES -->
+                <div id="view-ajustes" class="view-section">
+                    <h1 style="color: #8b0000;">Configuración</h1>
+                    <p style="margin-top: 15px; font-size: 1.1rem;">Ajustes de la cuenta y preferencias de interfaz.</p>
+                </div>
+
+            </main>
+        </div>
     </div>
 
     <script>
@@ -369,7 +691,6 @@
                 if (users[email]) {
                     showMessage('Este correo ya está registrado.', 'error-message');
                 } else {
-                    // Guardar y entrar automáticamente
                     users[email] = password;
                     localStorage.setItem('zoomi_users', JSON.stringify(users));
                     enterApp(email);
@@ -382,7 +703,6 @@
                         showMessage('Contraseña incorrecta.', 'error-message');
                     }
                 } else {
-                    // Si el correo no existía, lo crea y le permite entrar directo
                     users[email] = password;
                     localStorage.setItem('zoomi_users', JSON.stringify(users));
                     enterApp(email);
@@ -394,7 +714,10 @@
             closeLogoutModal();
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            document.getElementById('user-display-email').innerText = email;
+
+            // Extraer el nombre de usuario de la parte previa al @
+            let username = email.split('@')[0];
+            document.getElementById('user-welcome-title').innerText = `Bienvenido ${username}`;
         }
 
         function logout() {
@@ -407,6 +730,28 @@
             msg.innerText = text;
             msg.className = `message ${typeClass}`;
             msg.style.display = 'block';
+        }
+
+        // Cambio interactivo entre las pestañas del menú lateral
+        function switchTab(element, viewId) {
+            // Quitar clase activa de todos los botones
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Activar el botón presionado
+            element.classList.add('active');
+
+            // Ocultar todas las pantallas
+            document.querySelectorAll('.view-section').forEach(view => {
+                view.classList.remove('active-view');
+            });
+
+            // Mostrar la pantalla correspondiente
+            const activeView = document.getElementById(viewId);
+            if (activeView) {
+                activeView.classList.add('active-view');
+            }
         }
     </script>
 
