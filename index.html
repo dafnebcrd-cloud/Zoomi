@@ -21,7 +21,7 @@
             padding: 20px;
         }
 
-        /* VISTA 1: LOGIN / PORTADA */
+        /* VISTA 1: PORTADA DE LOGIN */
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -187,7 +187,7 @@
 
         /* VISTA 2: INTERIOR DE LA PÁGINA (CUERPO PRINCIPAL) */
         #main-app {
-            display: none; /* Oculto por defecto */
+            display: none;
             width: 100%;
             max-width: 1000px;
             min-height: 80vh;
@@ -299,7 +299,7 @@
                 <h1>¡Bienvenido a Zoomi!</h1>
                 <p>Has ingresado correctamente al panel principal.</p>
             </div>
-            <!-- Aquí puedes incluir el resto de secciones, módulos o contenido de tu plataforma -->
+            <!-- Agrega el resto de secciones o elementos de tu web aquí -->
         </main>
     </div>
 
@@ -382,7 +382,6 @@
                         showMessage('Contraseña incorrecta.', 'error-message');
                     }
                 } else {
-                    // Registro automático en el primer acceso
                     users[email] = password;
                     localStorage.setItem('zoomi_users', JSON.stringify(users));
                     enterApp(email);
