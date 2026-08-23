@@ -4,20 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zoomi</title>
+  
+  <!-- AQUÍ SE ENLAZA EL CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- PANTALLA PRINCIPAL / FONDO DE ZOOMI -->
+  <!-- Tu interfaz visual -->
   <div id="mainApp" class="background-container">
     <header class="app-header">
       <img src="zoomi-logo.png" alt="Zoomi Logo" class="app-logo">
       <h1 id="welcomeUserMessage">Bienvenido a Zoomi</h1>
-      <button id="logoutBtn" class="btn-primary" style="display: none; width: auto;">Cerrar sesión</button>
+      <button id="logoutBtn" class="btn-primary" style="display: none;">Cerrar sesión</button>
     </header>
 
     <main class="content-body">
-      <!-- Iconos de navegación con tus archivos de imagen -->
       <nav class="nav-icons">
         <img src="Casita!.png" alt="Inicio" class="nav-icon">
         <img src="Lecciones!.png" alt="Lecciones" class="nav-icon">
@@ -27,12 +28,10 @@
     </main>
   </div>
 
-  <!-- MODAL DE AUTENTICACIÓN Y SEGURIDAD -->
+  <!-- Modal de inicio de sesión -->
   <div id="authModal" class="modal-overlay">
     <div class="modal-content">
       <h2 id="modalTitle">Iniciar Sesión</h2>
-      
-      <!-- Mensaje de error/éxito -->
       <div id="authAlert" class="alert-message" style="display: none;"></div>
 
       <form id="authForm">
@@ -58,7 +57,7 @@
     </div>
   </div>
 
-  <!-- VÍNCULO A TU SCRIPT MAIN.JS -->
+  <!-- AQUÍ SE ENLAZA EL JAVASCRIPT -->
   <script type="module" src="main.js"></script>
 </body>
 </html>
