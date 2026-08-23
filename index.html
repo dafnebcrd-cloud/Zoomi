@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zumi - Plataforma Educativa</title>
+    <title>Zoomi - Plataforma Educativa</title>
     
-    <!-- Activamos Tailwind CSS para el orden y la responsividad -->
+    <!-- Enlace ultra estable de Tailwind CSS para fijar los tamaños e imágenes -->
     <script src="https://jsdelivr.net"></script>
     
     <style>
-        /* Tu fondo con ecuaciones matemáticas adaptado a todas las pantallas */
+        /* Tu fondo con ecuaciones matemáticas adaptado */
         .fondo-zumi {
             background-image: url('fondo.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+        }
+        /* Forzamos que el panel se oculte al inicio usando CSS tradicional */
+        .oculto-inicial {
+            display: none !important;
         }
     </style>
 </head>
@@ -24,14 +28,14 @@
     <div id="login-container" class="bg-white/95 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md border border-amber-200 backdrop-blur-sm m-2">
         <div class="text-center mb-6">
             <!-- Tu logo oficial de Zoomi arriba -->
-            <img src="zoomi-logo.png" alt="Zumi Logo" class="mx-auto h-16 sm:h-20 object-contain mb-2">
+            <img src="zoomi-logo.png" alt="Zoomi Logo" class="mx-auto h-16 sm:h-20 object-contain mb-2">
             <p class="text-xs sm:text-sm text-amber-700 font-medium">¡Ingresa para comenzar a aprender!</p>
         </div>
         
         <div class="space-y-4">
             <div>
                 <label class="block text-xs sm:text-sm font-bold text-amber-900 mb-1">Correo del Alumno</label>
-                <input type="email" id="email" placeholder="tu-correo@zumi.com" class="w-full px-3 py-2 border-2 border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-800 text-sm bg-amber-50/50">
+                <input type="email" id="email" placeholder="tu-correo@zoomi.com" class="w-full px-3 py-2 border-2 border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-800 text-sm bg-amber-50/50">
             </div>
             
             <div>
@@ -40,24 +44,21 @@
             </div>
             
             <button id="btn-login" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 sm:py-3 rounded-xl transition duration-200 shadow-md text-sm sm:text-base">
-                ¡Entrar a Zumi!
+                ¡Entrar a Zoomi!
             </button>
             
             <p id="error-message" class="text-red-600 text-xs sm:text-sm text-center font-bold mt-2"></p>
         </div>
     </div>
 
-    <!-- 2. PANTALLA PRINCIPAL RESPONSIVA (Se adapta a PC, Tablet y Celular) -->
-    <!-- 'flex-col' para celular (menú arriba), 'md:flex-row' para PC (menú al costado) -->
-    <div id="app-container" class="hidden w-full max-w-6xl min-h-[90vh] md:h-[85vh] bg-white/90 rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-amber-400 overflow-hidden flex flex-col md:flex-row">
+    <!-- 2. PANTALLA PRINCIPAL RESPONSIVA (Agregamos 'oculto-inicial') -->
+    <div id="app-container" class="oculto-inicial w-full max-w-6xl min-h-[90vh] md:h-[85vh] bg-white/90 rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-amber-400 overflow-hidden flex flex-col md:flex-row">
         
-        <!-- BARRA DE NAVAGACIÓN (Arriba en celular, a la izquierda en PC) -->
+        <!-- BARRA DE NAVEGACIÓN -->
         <div class="w-full md:w-28 bg-amber-400 p-3 sm:p-4 flex flex-row md:flex-col items-center justify-between border-b-2 md:border-b-0 md:border-r-4 border-amber-500/30 gap-2">
             
-            <!-- Logo pequeño (Oculto en celular para ahorrar espacio, visible en tablets/PC) -->
-            <img src="zoomi-logo.png" alt="Zumi" class="hidden sm:block w-16 md:w-full object-contain md:mb-6">
+            <img src="zoomi-logo.png" alt="Zoomi" class="hidden sm:block w-16 md:w-full object-contain md:mb-6">
             
-            <!-- Botones del Menú con tus nombres exactos de archivo PNG -->
             <div class="flex flex-row md:flex-col gap-2 sm:gap-4 md:gap-5 flex-1 justify-center md:justify-start items-center">
                 <button class="w-10 h-10 sm:w-14 sm:h-14 bg-white rounded-xl sm:rounded-2xl shadow p-1.5 sm:p-2 hover:bg-amber-100 transition">
                     <img src="Casita!.png" alt="Inicio" class="w-full h-full object-contain">
@@ -76,7 +77,6 @@
                 </button>
             </div>
             
-            <!-- Botón de Salida -->
             <button id="btn-logout" class="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-xl sm:rounded-2xl shadow p-1.5 sm:p-2 hover:bg-red-200 transition md:mt-auto">
                 <img src="salida!.png" alt="Salir" class="w-full h-full object-contain">
             </button>
@@ -84,8 +84,6 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <div class="flex-1 p-4 sm:p-6 overflow-y-auto flex flex-col gap-4 sm:gap-6 bg-amber-50/30">
-            
-            <!-- Encabezado superior -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-xl sm:rounded-2xl shadow-sm border border-amber-100 gap-2">
                 <div>
                     <h1 class="text-xl sm:text-2xl font-black text-amber-900">¡Hola Aventurero!</h1>
@@ -96,14 +94,9 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR CENTRAL: Cambia a 1 columna en celular, 3 en PC -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 flex-1">
-                
-                <!-- El mapa de la ruta de aprendizaje -->
                 <div class="lg:col-span-2 bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-md border border-amber-100 flex flex-col items-center justify-center min-h-[250px] sm:min-h-[300px]">
-                    <p class="text-amber-800 font-bold mb-4 text-center text-sm sm:text-base">🗺️ Tu Ruta de Aprendizaje Zumi</p>
-                    
-                    <!-- Circulitos de estaciones del mapa -->
+                    <p class="text-amber-800 font-bold mb-4 text-center text-sm sm:text-base">🗺️ Tu Ruta de Aprendizaje Zoomi</p>
                     <div class="flex items-center gap-3 sm:gap-6 md:gap-8 flex-wrap justify-center relative py-4">
                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-500 border-4 border-white shadow-md flex items-center justify-center text-white font-black text-sm cursor-pointer">1</div>
                         <div class="h-1.5 w-6 sm:w-8 bg-orange-400 rounded"></div>
@@ -113,29 +106,21 @@
                     </div>
                 </div>
 
-                <!-- Paneles del Alumno lado derecho -->
                 <div class="flex flex-col sm:flex-row lg:flex-col gap-4">
-                    <!-- Tarjeta de personaje -->
                     <div class="bg-gradient-to-br from-amber-400 to-orange-400 p-4 sm:p-5 rounded-xl sm:rounded-2xl shadow-md text-white flex flex-col items-center text-center flex-1 sm:w-1/2 lg:w-full">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full p-2 shadow-inner mb-2 flex items-center justify-center text-2xl sm:text-3xl">
-                            🦊
-                        </div>
-                        <h3 class="font-black text-sm sm:text-lg">Mi Perfil Zumi</h3>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full p-2 shadow-inner mb-2 flex items-center justify-center text-2xl sm:text-3xl">🦊</div>
+                        <h3 class="font-black text-sm sm:text-lg">Mi Perfil Zoomi</h3>
                         <p class="text-[10px] sm:text-xs opacity-90">Estudiante Activo</p>
                     </div>
-
-                    <!-- Panel informativo -->
                     <div class="bg-white p-4 sm:p-5 rounded-xl sm:rounded-2xl shadow-md border border-amber-100 flex-1 sm:w-1/2 lg:w-full">
                         <h4 class="font-bold text-amber-900 mb-1 text-sm sm:text-base">📢 Próximo Desafío</h4>
                         <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">Completa la primera estación para ganar tu primera medalla.</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- ENLACE CORRECTO: Apunta directamente a tu archivo 'main.js' -->
     <script type="module" src="main.js"></script>
 </body>
 </html>
