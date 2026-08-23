@@ -8,7 +8,6 @@ import {
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Configuración de tu proyecto en Firebase
 const firebaseConfig = {
   apiKey: "TU_API_KEY_AQUÍ",
   authDomain: "zoomi-aa021.firebaseapp.com",
@@ -21,7 +20,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Nodos del DOM
 const authModal = document.getElementById("authModal");
 const modalTitle = document.getElementById("modalTitle");
 const authForm = document.getElementById("authForm");
@@ -35,7 +33,6 @@ const cancelBtn = document.getElementById("cancelBtn");
 
 let isRegisterMode = false;
 
-// MOSTRAR MENSAJES DE ALERTA
 function showAlert(message, isError = true) {
   authAlert.textContent = message;
   authAlert.style.color = isError ? "#721c24" : "#155724";
@@ -49,7 +46,6 @@ function clearAlert() {
   authAlert.textContent = "";
 }
 
-// CAMBIO ENTRE REGISTRO E INICIO DE SESIÓN
 function setAuthMode(register) {
   isRegisterMode = register;
   clearAlert();
@@ -73,12 +69,10 @@ function setAuthMode(register) {
 
 setAuthMode(false);
 
-// REGLA: Mínimo 8 caracteres, al menos 1 letra mayúscula y 1 número
 function isPasswordStrong(password) {
   return /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
 }
 
-// MANEJO DEL FORMULARIO
 authForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   clearAlert();
@@ -87,7 +81,6 @@ authForm.addEventListener("submit", async (e) => {
   const password = authPassword.value;
 
   if (isRegisterMode) {
-    // --- FILTRO DE REGISTRO ---
     if (!isPasswordStrong(password)) {
       showAlert("La contraseña debe incluir al menos 8 caracteres, 1 mayúscula y 1 número.");
       return;
@@ -98,24 +91,23 @@ authForm.addEventListener("submit", async (e) => {
       await sendEmailVerification(userCredential.user);
       await signOut(auth);
 
-      showAlert("¡Registro exitoso! Enviamos un correo de verificación. Confírmalo para poder ingresar.", false);
+      showAlert("¡Registro exitoso! Revisa tu correo para verificar tu cuenta antes de entrar.", false);
       setTimeout(() => setAuthMode(false), 4000);
 
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
-        showAlert("Este correo ya está registrado. Haz clic en 'Inicia sesión'.");
+        showAlert("Este correo ya está registrado.");
       } else {
         showAlert("Error en el registro: " + error.message);
       }
     }
 
   } else {
-    // --- FILTRO DE INICIO DE SESIÓN ---
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
       if (!userCredential.user.emailVerified) {
-        showAlert("Debes verificar tu correo electrónico antes de ingresar.");
+        showAlert("Debes verificar tu correo antes de ingresar.");
         await signOut(auth);
         return;
       }
@@ -128,7 +120,6 @@ authForm.addEventListener("submit", async (e) => {
   }
 });
 
-// CONTROL DE ESTADO DE SESIÓN
 onAuthStateChanged(auth, (user) => {
   if (user && user.emailVerified) {
     authModal.style.display = "none";

@@ -1,4 +1,32 @@
-/* ESTILOS DEL MODAL Y ALERTAS DE SEGURIDAD */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+/* Fondo principal usando tu imagen */
+.background-container {
+  background-image: url('fondo.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.app-logo {
+  height: 50px;
+  width: auto;
+}
+
+/* Modal centrado con bordes decorativos */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -13,18 +41,18 @@
 }
 
 .modal-content {
-  background: #ffffff;
+  background: white;
   padding: 30px;
   border-radius: 16px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   border: 3px solid #800000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .alert-message {
-  padding: 10px 14px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 6px;
   margin-bottom: 15px;
   font-size: 13px;
   text-align: center;
@@ -33,28 +61,24 @@
 
 .input-group {
   margin-bottom: 15px;
-  text-align: left;
 }
 
 .input-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   font-weight: bold;
-  color: #333;
 }
 
 .input-group input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px;
   border: 2px solid #ccc;
   border-radius: 8px;
   box-sizing: border-box;
-  font-size: 14px;
 }
 
 .button-group {
   display: flex;
-  justify-content: space-between;
   gap: 10px;
   margin-top: 20px;
 }
@@ -71,7 +95,7 @@
 }
 
 .btn-secondary {
-  background-color: #d1d1d1;
+  background-color: #ccc;
   color: #333;
   padding: 10px;
   border: none;
@@ -90,6 +114,4 @@
 .toggle-mode-container a {
   color: #800000;
   font-weight: bold;
-  text-decoration: underline;
-  cursor: pointer;
 }

@@ -8,27 +8,31 @@
 </head>
 <body>
 
-  <!-- PANTALLA PRINCIPAL DE ZOOMI -->
-  <div id="mainApp">
+  <!-- PANTALLA PRINCIPAL / FONDO DE ZOOMI -->
+  <div id="mainApp" class="background-container">
     <header class="app-header">
-      <div class="logo-container">
-        <img src="logo.png" alt="Zoomi Logo" class="app-logo">
-      </div>
+      <img src="zoomi-logo.png" alt="Zoomi Logo" class="app-logo">
       <h1 id="welcomeUserMessage">Bienvenido a Zoomi</h1>
-      <button id="logoutBtn" class="btn-logout" style="display: none;">Cerrar sesión</button>
+      <button id="logoutBtn" class="btn-primary" style="display: none; width: auto;">Cerrar sesión</button>
     </header>
 
     <main class="content-body">
-      <!-- Aquí van tus lecciones y el mapa de la app -->
+      <!-- Iconos de navegación con tus archivos de imagen -->
+      <nav class="nav-icons">
+        <img src="Casita!.png" alt="Inicio" class="nav-icon">
+        <img src="Lecciones!.png" alt="Lecciones" class="nav-icon">
+        <img src="Yo!.png" alt="Perfil" class="nav-icon">
+        <img src="Ajustes!.png" alt="Ajustes" class="nav-icon">
+      </nav>
     </main>
   </div>
 
-  <!-- MODAL DE INICIAR SESIÓN / REGISTRO -->
+  <!-- MODAL DE AUTENTICACIÓN Y SEGURIDAD -->
   <div id="authModal" class="modal-overlay">
     <div class="modal-content">
       <h2 id="modalTitle">Iniciar Sesión</h2>
       
-      <!-- Mensajes de Alerta -->
+      <!-- Mensaje de error/éxito -->
       <div id="authAlert" class="alert-message" style="display: none;"></div>
 
       <form id="authForm">
@@ -54,7 +58,7 @@
     </div>
   </div>
 
-  <!-- VÍNCULO AL SCRIPT SEPARADO -->
-  <script type="module" src="app.js"></script>
+  <!-- VÍNCULO A TU SCRIPT MAIN.JS -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
